@@ -90,17 +90,61 @@ bool KinematicController::checkCollision(Object& obj1, Object& obj2)
 	return false;
 }
 
+bool KinematicController::SphereSphereCollision(Object& obj1, Object& obj2)
+{
+	glm::vec3 CollisionPoint;
+	glm::vec3 CPVector;
+
+	float mass1 = obj1.GetRigidbody()->GetMass();
+	float mass2 = obj2.GetRigidbody()->GetMass();
+
+	CPVector = glm::normalize(obj1.GetPosition() - obj2.GetPosition());
+	CollisionPoint = obj1.GetSphereRadius() * CPVector;
+
+	float Mag1 = glm::dot(obj1.GetRigidbody()->GetMomentum(), CPVector);
+	float Mag2 = glm::dot(obj2.GetRigidbody()->GetMomentum(), CPVector);
+
+	glm::vec3 TotalMomentum = (Mag1 * CPVector) + (Mag2 * CPVector);
+	glm::vec3 velAfterCol = TotalMomentum / (mass1 + mass2);
+
+	obj1.GetRigidbody()->AddVelocity(velAfterCol);
+	obj2.GetRigidbody()->AddVelocity(velAfterCol);
+	
+}
+
 void KinematicController::CheckPreciseCollision(Object& obj1, Object& obj2)
 {
+	if (!obj1.GetRigidbody()->getKinematic() && !obj2.GetRigidbody()->getKinematic())
+	{
+		switch (obj1.GetColliderType())
+		{
+		case 0:
+			switch (obj2.GetColliderType())
+			{
+			case 0:
+
+				break;
+			case 1:
+				break;
+			}
+			break;
+		case 1:
+			switch (obj2.GetColliderType())
+			{
+			case 0:
+
+				break;
+			case 1:
+				SphereSphereCollision(obj1, obj2);
+				break;
+			}
+			break;
+		}
+	}
 }
 
-void KinematicController::DoWallCollision(glm::vec3 wallNormal, Kinematic* Rb)
-{
 
-}
 
-void KinematicController::DoMomentumCollision()
-{
-}
+
 
 

@@ -32,11 +32,6 @@ void Kinematic::Update(float DeltaTime, std::vector<Object>& objs, int address)
 	}
 }
 
-void Kinematic::setKinematic(bool value)
-{
-	isKinematic = value;
-}
-
 bool Kinematic::CheckCollision(Object& obj)
 {
 	
@@ -114,12 +109,8 @@ void Kinematic::SetColliderType(int col)
 	colliderType = col;
 }
 
-float Kinematic::CalculateMomentum()
+glm::vec3 Kinematic::CalculateMomentum()
 {
-	return mass * glm::length(velocity);
+	return mass * velocity;
 }
 
-float Kinematic::GetMass()
-{
-	return mass;
-}
