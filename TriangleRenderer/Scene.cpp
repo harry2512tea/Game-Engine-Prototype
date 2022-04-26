@@ -51,13 +51,13 @@ void Scene::DrawScene()
 
 void Scene::CreateLevel()
 {
-	//objects.push_back(Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -5.0f, -20.0f), glm::vec3(0.0f), glm::vec3(0.5f)));
+	objects.push_back(Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -5.0f, -20.0f), glm::vec3(0.0f), glm::vec3(0.5f)));
 	objects.push_back(Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(2, 0, -20)));
 	objects.push_back(Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(-2, 0, -20), glm::vec3(0, 90, 0)));
 	objects.push_back(Object("Models/Ball/sphere.obj", "Models/Ball/WelcomeMatClear_diffuse.jpg", SceneShader, glm::vec3(-0, 4, -10)));
 
-	objects[2].GetRigidbody()->SetColliderType(1);
-	objects[2].GetRigidbody()->setKinematic(false);
+	objects[3].GetRigidbody()->SetColliderType(1);
+	objects[3].GetRigidbody()->setKinematic(false);
 
 	//objects[2].AddScript(new movement(&objects[2]));
 }

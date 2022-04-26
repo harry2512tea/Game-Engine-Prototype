@@ -358,8 +358,6 @@ void Object::StartScripts()
 void Object::translation(glm::vec3 movement)
 {
 	position += movement;
-	std::cout << "translating" << std::endl;
-	std::cout << "New Position: " << position.x << " " << position.y << " " << position.z << std::endl;
 }
 
 void Object::rotate(glm::vec3 _rotation)
