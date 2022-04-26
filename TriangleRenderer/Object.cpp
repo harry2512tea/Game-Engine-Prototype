@@ -267,9 +267,16 @@ void Object::calculateAABB()
 	min = position + minOffset;
 	max = position + maxOffset;
 	colliderRadius = size.x/2;
-	std::cout << "size:" << size.x << " " << size.y << " " << size.z << std::endl;
-	std::cout << "Min:" << min.x << " " << min.y << " " << min.z << std::endl;
-	std::cout << "Max:" << max.x << " " << max.y << " " << max.z << std::endl;
+	//std::cout << "size:" << size.x << " " << size.y << " " << size.z << std::endl;
+	//std::cout << "Min:" << min.x << " " << min.y << " " << min.z << std::endl;
+	//std::cout << "Max:" << max.x << " " << max.y << " " << max.z << std::endl;
+
+	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), position));
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_z, min_y, min_x), glm::vec3(max_x, min_y, max_z), position));
+	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_z, min_y, min_x), glm::vec3(min_x, min_y, min_z), position));
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position));
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, max_y, max_z), position));
+	Planes.push_back(new Plane(glm::vec3(min_x, min_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position));
 	
 }
 
@@ -315,6 +322,10 @@ void Object::Update(float DeltaTime)
 	{
 		scripts[i]->Update();
 	}
+	for (int i = 0; i < Planes.size(); i++)
+	{
+		Planes[i]->UpdatePoints(position);
+	}
 	
 }
 
@@ -347,6 +358,7 @@ void Object::StartScripts()
 void Object::translate(glm::vec3 translation)
 {
 	position += translation;
+	std::cout << "translating";
 }
 
 void Object::rotate(glm::vec3 _rotation)
@@ -357,6 +369,7 @@ void Object::rotate(glm::vec3 _rotation)
 void Object::SetPosition(glm::vec3 pos)
 {
 	position = pos;
+	//std::cout << position.y;
 }
 
 void Object::SetRotation(glm::vec3 rot)
@@ -420,9 +433,4 @@ float Object::GetSphereRadius()
 void Object::UpdatePhysics(float DeltaTime, std::vector<Object>& objs, int address)
 {
 	Rigidbody.Update(DeltaTime, objs, address);
-}
-
-Kinematic* Object::GetRigidbody()
-{
-	return &Rigidbody;
 }

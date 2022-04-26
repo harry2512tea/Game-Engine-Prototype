@@ -20,8 +20,8 @@ void movement::Update()
 	}
 	KeyInput();
 
-	std::cout << "Position:" << attachedObj->GetPosition().x << " " << attachedObj->GetPosition().y << " " << attachedObj->GetPosition().z << std::endl;
-	std::cout << "Center:" << attachedObj->center.x << " " << attachedObj->center.y << " " << attachedObj->center.z << std::endl;
+	//std::cout << "Position:" << attachedObj->GetPosition().x << " " << attachedObj->GetPosition().y << " " << attachedObj->GetPosition().z << std::endl;
+	//std::cout << "Center:" << attachedObj->center.x << " " << attachedObj->center.y << " " << attachedObj->center.z << std::endl;
 }
 
 void movement::KeyInput()

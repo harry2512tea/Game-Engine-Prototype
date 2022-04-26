@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "ObjectScript.h"
 #include "movement.h"
+#include "KinematicController.h"
 
 class Scene
 {
@@ -21,6 +22,7 @@ public:
 	glm::mat4 setCamRotation(glm::mat4 _cam);
 
 private:
+	KinematicController* kin = KinematicController::getInstance();
 	std::vector<Object> objects;
 	glm::vec3 LightPos, LightCol, camPos, camRot;
 	glm::mat4 cam;

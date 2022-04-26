@@ -1,8 +1,10 @@
 #pragma once
 #include <vector>
 #include "glm/glm.hpp"
+#include <iostream>
 
 class Object;
+class KinematicController;
 
 class Kinematic
 {
@@ -18,7 +20,10 @@ public:
 
 	glm::vec3 GetMomentum() { return momentum; };
 	glm::vec3 GetVelocity() { return velocity; };
-	void AddVelocity(glm::vec3 vel) { velocity += vel; };
+	void AddVelocity(glm::vec3 vel) {
+		velocity += vel;
+		
+	};
 	void SetVelocity(glm::vec3 vel) { velocity = vel; };
 
 	bool getKinematic() { return isKinematic; };
@@ -29,6 +34,7 @@ public:
 
 private:
 	glm::vec3 CalculateMomentum();
+	
 	
 	Object* attachedObj;
 	bool isKinematic = true;

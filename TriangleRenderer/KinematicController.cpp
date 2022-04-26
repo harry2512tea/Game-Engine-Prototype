@@ -1,4 +1,7 @@
 #include "KinematicController.h"
+#include "Plane.h"
+#include <vector>
+#include <iostream>
 
 KinematicController* KinematicController::instance = nullptr;
 
@@ -18,9 +21,13 @@ void KinematicController::CheckGeneralCollisions(std::vector<Object>& objs)
 	{
 		for (int O = i + 1; O < objs.size(); O++)
 		{
-			if (checkCollision(objs[i], objs[O]))
+			if (!objs[i].GetRigidbody()->getKinematic() || !objs[O].GetRigidbody()->getKinematic())
 			{
-				CheckPreciseCollision(objs[i], objs[O]);
+				if (checkCollision(objs[i], objs[O]))
+				{
+					std::cout << "Collision";
+					CheckPreciseCollision(objs[i], objs[O]);
+				}
 			}
 		}
 	}
@@ -28,6 +35,7 @@ void KinematicController::CheckGeneralCollisions(std::vector<Object>& objs)
 
 bool KinematicController::checkCollision(Object& obj1, Object& obj2)
 {
+	float x, y, z, dist;
 	switch (obj1.GetColliderType())
 	{
 	case 0:
@@ -60,11 +68,11 @@ bool KinematicController::checkCollision(Object& obj1, Object& obj2)
 		{
 		case 0:
 			glm::vec3 sphere = obj1.GetPosition();
-			float x = fmaxf(obj2.min.x, fminf(sphere.x, obj2.max.x));
-			float y = fmaxf(obj2.min.y, fminf(sphere.y, obj2.max.y));
-			float z = fmaxf(obj2.min.z, fminf(sphere.z, obj2.max.z));
+			x = fmaxf(obj2.min.x, fminf(sphere.x, obj2.max.x));
+			y = fmaxf(obj2.min.y, fminf(sphere.y, obj2.max.y));
+			z = fmaxf(obj2.min.z, fminf(sphere.z, obj2.max.z));
 
-			float dist = sqrt((x - sphere.x) * (x - sphere.x) +
+			dist = sqrt((x - sphere.x) * (x - sphere.x) +
 				(y - sphere.y) * (y - sphere.y) +
 				(z - sphere.z) * (x - sphere.z)
 			);
@@ -76,7 +84,7 @@ bool KinematicController::checkCollision(Object& obj1, Object& obj2)
 			glm::vec3 a = obj1.GetPosition();
 			glm::vec3 b = obj2.GetPosition();
 
-			float dist = sqrt((a.x - b.x) * (a.x - b.x) +
+			 dist = sqrt((a.x - b.x) * (a.x - b.x) +
 				(a.y - b.y) * (a.y - b.y) +
 				(a.z - b.z) * (a.z - b.z)
 			);
@@ -88,6 +96,27 @@ bool KinematicController::checkCollision(Object& obj1, Object& obj2)
 		break;
 	}
 	return false;
+}
+
+bool KinematicController::SpherePlaneCollision(Object& Sphere, Object& AABB)
+{
+	glm::vec3 ray = glm::normalize(-Sphere.GetRigidbody()->GetVelocity());
+	std::vector<Plane*>& planes = AABB.GetPlanes();
+
+	glm::vec3 IntersectPoint;
+	int planeNo;
+
+	for (int i = 0; i < planes.size(); i++)
+	{
+		if (planes[i]->CheckIntersection(ray, Sphere.GetPosition(), IntersectPoint))
+		{
+			planeNo = i;
+			break;
+		}
+	}
+	float Mag = glm::dot(Sphere.GetRigidbody()->GetVelocity(), -planes[planeNo]->normal);
+	Sphere.GetRigidbody()->AddVelocity(planes[planeNo]->normal * Mag * 2.0f);
+	return true;
 }
 
 bool KinematicController::SphereSphereCollision(Object& obj1, Object& obj2)
@@ -104,12 +133,27 @@ bool KinematicController::SphereSphereCollision(Object& obj1, Object& obj2)
 	float Mag1 = glm::dot(obj1.GetRigidbody()->GetMomentum(), CPVector);
 	float Mag2 = glm::dot(obj2.GetRigidbody()->GetMomentum(), CPVector);
 
-	glm::vec3 TotalMomentum = (Mag1 * CPVector) + (Mag2 * CPVector);
-	glm::vec3 velAfterCol = TotalMomentum / (mass1 + mass2);
-
-	obj1.GetRigidbody()->AddVelocity(velAfterCol);
-	obj2.GetRigidbody()->AddVelocity(velAfterCol);
 	
+
+	if (!obj1.GetRigidbody()->getKinematic() && !obj2.GetRigidbody()->getKinematic())
+	{
+		glm::vec3 TotalMomentum = (Mag1 * CPVector) + (Mag2 * CPVector);
+		glm::vec3 velAfterCol = TotalMomentum / (mass1 + mass2);
+		obj1.GetRigidbody()->AddVelocity(velAfterCol);
+		obj2.GetRigidbody()->AddVelocity(velAfterCol);
+	}
+	else if (!obj1.GetRigidbody()->getKinematic())
+	{
+		glm::vec3 velAfterCol = (Mag1 * CPVector) / mass1;
+		obj1.GetRigidbody()->AddVelocity(-velAfterCol);
+	}
+	else
+	{
+		glm::vec3 velAfterCol = (Mag2 * CPVector) / mass2;
+		obj2.GetRigidbody()->AddVelocity(-velAfterCol);
+	}
+	
+	return true;
 }
 
 void KinematicController::CheckPreciseCollision(Object& obj1, Object& obj2)
@@ -125,6 +169,7 @@ void KinematicController::CheckPreciseCollision(Object& obj1, Object& obj2)
 
 				break;
 			case 1:
+				SpherePlaneCollision(obj2, obj1);
 				break;
 			}
 			break;
@@ -132,7 +177,7 @@ void KinematicController::CheckPreciseCollision(Object& obj1, Object& obj2)
 			switch (obj2.GetColliderType())
 			{
 			case 0:
-
+				SpherePlaneCollision(obj1, obj2);
 				break;
 			case 1:
 				SphereSphereCollision(obj1, obj2);
@@ -141,10 +186,18 @@ void KinematicController::CheckPreciseCollision(Object& obj1, Object& obj2)
 			break;
 		}
 	}
+	else if (!obj1.GetRigidbody()->getKinematic())
+	{
+
+	}
+	else if (!obj2.GetRigidbody()->getKinematic())
+	{
+
+	}
 }
 
-
-
-
-
-
+void KinematicController::Update(std::vector<Object>& objs)
+{
+	//std::cout << "Updating Collision Detection";
+	CheckGeneralCollisions(objs);
+}

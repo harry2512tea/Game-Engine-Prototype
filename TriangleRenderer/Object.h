@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "ObjectScript.h"
 #include "Kinematic.h"
+#include "Plane.h"
 
 struct Object
 {
@@ -42,7 +43,9 @@ struct Object
 	float GetSphereRadius();
 	void UpdatePhysics(float DeltaTime, std::vector<Object>& objs, int address);
 
-	Kinematic* GetRigidbody();
+	Kinematic* GetRigidbody() { return &Rigidbody; };
+
+	std::vector<Plane*>& GetPlanes() { return Planes; };
 
 	glm::vec3 GetPosition();
 	glm::vec3 GetRotation();
@@ -57,8 +60,9 @@ private:
 	void GetVertices(const std::string& _modelPath);
 	void calculateAABB();
 	
-	std::vector < glm::vec3> vertices;
+	std::vector<glm::vec3> vertices;
 	std::vector<ObjectScript*> scripts;
+	std::vector<Plane*> Planes;
 	int ScriptNo = 0;
 	WfModel objectModel = { 0 };
 	glm::vec3 scale;
@@ -73,4 +77,5 @@ private:
 	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc;
 	int width, height;
 	glm::mat4 setModelRotation(glm::mat4 model);
+
 };
