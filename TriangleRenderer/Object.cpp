@@ -355,10 +355,11 @@ void Object::StartScripts()
 }
 
 //object movement functions
-void Object::translate(glm::vec3 translation)
+void Object::translation(glm::vec3 movement)
 {
-	position += translation;
-	std::cout << "translating";
+	position += movement;
+	std::cout << "translating" << std::endl;
+	std::cout << "New Position: " << position.x << " " << position.y << " " << position.z << std::endl;
 }
 
 void Object::rotate(glm::vec3 _rotation)
@@ -432,5 +433,6 @@ float Object::GetSphereRadius()
 
 void Object::UpdatePhysics(float DeltaTime, std::vector<Object>& objs, int address)
 {
-	Rigidbody.Update(DeltaTime, objs, address);
+	Rigidbody.Update(DeltaTime);
+	std::cout << "Position: " << position.x << " " << position.y << " " << position.z << std::endl;
 }

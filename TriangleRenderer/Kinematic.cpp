@@ -11,34 +11,26 @@ Kinematic::Kinematic(Object* obj) : attachedObj(obj)
 	colliderType = 0;
 	velocity = glm::vec3(0.0f);
 	momentum = glm::vec3(0.0f);
-	
 }
 
-void Kinematic::Update(float DeltaTime, std::vector<Object>& objs, int address)
+void Kinematic::Update(float DeltaTime)
 {
 	if (!isKinematic)
 	{
 		KinematicController* kin = KinematicController::getInstance();
-		glm::vec3 currentPos = attachedObj->GetPosition();
+		//glm::vec3 currentPos = attachedObj->GetPosition();
 		//std::cout << kin->GetGravity().y;
 		glm::vec3 gravity = kin->GetGravity() * DeltaTime;
 		AddVelocity(gravity);
 		//std::cout << DeltaTime;
 		//attachedObj->SetPosition(currentPos + (velocity /* * DeltaTime*/));
-		attachedObj->translate(velocity);
+		std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
+		attachedObj->translation(glm::vec3(velocity.x, velocity.y, velocity.z) * DeltaTime);
 		momentum = CalculateMomentum();
-		/*for (int i = 0; i < objs.size(); i++)
-		{
-			if (i != address)
-			{
-				CheckCollision(objs[i]);
-			}
-		}*/
-
 	}
 }
 
-bool Kinematic::CheckCollision(Object& obj)
+/*bool Kinematic::CheckCollision(Object& obj)
 {
 	float x, y, z, dist;
 	switch (colliderType)
@@ -101,7 +93,7 @@ bool Kinematic::CheckCollision(Object& obj)
 		break;
 	}
 	return false;
-}
+}*/
 
 int Kinematic::GetColliderType()
 {

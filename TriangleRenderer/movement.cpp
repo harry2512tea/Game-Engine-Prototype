@@ -13,7 +13,7 @@ void movement::Start()
 
 void movement::Update()
 {
-	attachedObj->translate(glm::vec3(0.1f, 0.0f, 0.0f));
+	attachedObj->translation(glm::vec3(0.01f, 0.0f, 0.0f));
 	if (attachedObj->GetPosition().x > 10)
 	{
 		attachedObj->SetPosition(glm::vec3(-10.0f, 1.0f, 0.0f));

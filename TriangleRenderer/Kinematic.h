@@ -10,20 +10,17 @@ class Kinematic
 {
 public:
 	Kinematic(Object* obj);
-	void Update(float DeltaTime, std::vector<Object>& objs, int address);
+	void Update(float DeltaTime);
 	
 	
-	bool CheckCollision(Object& obj);
+	//bool CheckCollision(Object& obj);
 
 	float GetMass() { return mass; };
 	void SetMass(float _mass) { mass = _mass; };
 
 	glm::vec3 GetMomentum() { return momentum; };
 	glm::vec3 GetVelocity() { return velocity; };
-	void AddVelocity(glm::vec3 vel) {
-		velocity += vel;
-		
-	};
+	void AddVelocity(glm::vec3 vel) { velocity += vel; };
 	void SetVelocity(glm::vec3 vel) { velocity = vel; };
 
 	bool getKinematic() { return isKinematic; };

@@ -13,8 +13,9 @@
 #include "Kinematic.h"
 #include "Plane.h"
 
-struct Object
+class Object
 {
+public:
 	//main functions of the object
 	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot, glm::vec3 _scale);
 	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot);
@@ -30,7 +31,7 @@ struct Object
 	void Update(float DeltaTime);
 	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam);
 
-	void translate(glm::vec3 translation);
+	void translation(glm::vec3 movement);
 	void rotate(glm::vec3 _rotation);
 
 	void SetPosition(glm::vec3 pos);
@@ -65,12 +66,12 @@ private:
 	std::vector<Plane*> Planes;
 	int ScriptNo = 0;
 	WfModel objectModel = { 0 };
-	glm::vec3 scale;
-	glm::vec3 position;
-	glm::vec3 rotation;
+	glm::vec3 scale = glm::vec3(0.0f);
+	glm::vec3 position = glm::vec3(0.0f);
+	glm::vec3 rotation = glm::vec3(0.0f);
 
 	//bounding boxes
-	glm::vec3 minOffset, maxOffset;
+	glm::vec3 minOffset, maxOffset = glm::vec3(0.0f);
 	float colliderRadius;
 	
 	
