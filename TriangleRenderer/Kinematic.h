@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 
 class Object;
+class KinematicController;
 
 class Kinematic
 {

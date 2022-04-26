@@ -1,6 +1,7 @@
 #pragma once
 #include "Kinematic.h"
 #include "Object.h"
+#include "KinematicController.h"
 
 #include <math.h>
 
@@ -39,7 +40,7 @@ void Kinematic::setKinematic(bool value)
 
 bool Kinematic::CheckCollision(Object& obj)
 {
-	
+	float x, y, z, dist;
 	switch (colliderType)
 	{
 	case 0:
@@ -53,11 +54,11 @@ bool Kinematic::CheckCollision(Object& obj)
 
 		case 1:
 			glm::vec3 sphere = obj.GetPosition();
-			float x = fmaxf(attachedObj->min.x, fminf(sphere.x, attachedObj->max.x));
-			float y = fmaxf(attachedObj->min.y, fminf(sphere.y, attachedObj->max.y));
-			float z = fmaxf(attachedObj->min.z, fminf(sphere.z, attachedObj->max.z));
+			x = fmaxf(attachedObj->min.x, fminf(sphere.x, attachedObj->max.x));
+			y = fmaxf(attachedObj->min.y, fminf(sphere.y, attachedObj->max.y));
+			z = fmaxf(attachedObj->min.z, fminf(sphere.z, attachedObj->max.z));
 
-			float dist = sqrt((x - sphere.x) * (x - sphere.x) +
+			dist = sqrt((x - sphere.x) * (x - sphere.x) +
 				(y - sphere.y) * (y - sphere.y) +
 				(z - sphere.z) * (x - sphere.z)
 			);
@@ -72,11 +73,11 @@ bool Kinematic::CheckCollision(Object& obj)
 		{
 		case 0:
 			glm::vec3 sphere = attachedObj->GetPosition();
-			float x = fmaxf(obj.min.x, fminf(sphere.x, obj.max.x));
-			float y = fmaxf(obj.min.y, fminf(sphere.y, obj.max.y));
-			float z = fmaxf(obj.min.z, fminf(sphere.z, obj.max.z));
+			x = fmaxf(obj.min.x, fminf(sphere.x, obj.max.x));
+			y = fmaxf(obj.min.y, fminf(sphere.y, obj.max.y));
+			z = fmaxf(obj.min.z, fminf(sphere.z, obj.max.z));
 
-			float dist = sqrt((x - sphere.x) * (x - sphere.x) +
+			dist = sqrt((x - sphere.x) * (x - sphere.x) +
 				(y - sphere.y) * (y - sphere.y) +
 				(z - sphere.z) * (x - sphere.z)
 			);
@@ -88,7 +89,7 @@ bool Kinematic::CheckCollision(Object& obj)
 			glm::vec3 a = attachedObj->GetPosition();
 			glm::vec3 b = obj.GetPosition();
 
-			float dist = sqrt((a.x - b.x) * (a.x - b.x) +
+			dist = sqrt((a.x - b.x) * (a.x - b.x) +
 				(a.y - b.y) * (a.y - b.y) +
 				(a.z - b.z) * (a.z - b.z)
 			);

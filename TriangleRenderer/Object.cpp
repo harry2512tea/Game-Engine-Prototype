@@ -419,7 +419,7 @@ float Object::GetSphereRadius()
 
 void Object::UpdatePhysics(float DeltaTime, std::vector<Object>& objs, int address)
 {
-	Rigidbody.Update(DeltaTime, objs, address);
+	//Rigidbody.Update(DeltaTime, objs, address);
 }
 
 Kinematic* Object::GetRigidbody()

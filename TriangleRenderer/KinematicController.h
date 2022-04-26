@@ -6,7 +6,7 @@
 
 class KinematicController
 {
-	KinematicController();
+public:
 	static KinematicController* getInstance();
 	void CheckGeneralCollisions(std::vector<Object>& objs);
 	void CheckPreciseCollision(Object& obj1, Object& obj2);

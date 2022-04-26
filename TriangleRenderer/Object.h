@@ -12,8 +12,9 @@
 #include "ObjectScript.h"
 #include "Kinematic.h"
 
-struct Object
+class Object
 {
+public:
 	//main functions of the object
 	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot, glm::vec3 _scale);
 	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot);

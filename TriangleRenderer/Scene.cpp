@@ -23,10 +23,10 @@ void Scene::updateObjects(float DeltaTime)
 	}
 	camPos = objects[2].GetPosition() + glm::vec3(0.0f, 2.0f, 10.0f);
 
-	for (int i = 0; i < objects.size(); i++)
+	/*for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i].UpdatePhysics(DeltaTime, objects, i);
-	}
+	}*/
 }
 
 void Scene::DrawScene()
