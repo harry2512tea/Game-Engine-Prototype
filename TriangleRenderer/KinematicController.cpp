@@ -133,7 +133,6 @@ bool KinematicController::SphereSphereCollision(Object& obj1, Object& obj2)
 	float Mag1 = glm::dot(obj1.GetRigidbody()->GetMomentum(), CPVector);
 	float Mag2 = glm::dot(obj2.GetRigidbody()->GetMomentum(), CPVector);
 
-	
 
 	if (!obj1.GetRigidbody()->getKinematic() && !obj2.GetRigidbody()->getKinematic())
 	{
