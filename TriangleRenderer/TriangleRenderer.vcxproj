@@ -150,9 +150,14 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectScript.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="Lights.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test.frag" />
+    <None Include="test.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

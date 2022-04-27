@@ -1,6 +1,8 @@
 #include "Shader.h"
 
 #include <fstream>
+#include <vector>
+#include <iostream>
 
 std::string load_file(const std::string& _path)
 {
@@ -53,6 +55,13 @@ Shader::Shader(const std::string& _vertPath, const std::string& _fragPath)
 	
 	if (!success)
 	{
+		GLint maxLength = 0;
+		glGetShaderiv(fragmentShaderId, GL_INFO_LOG_LENGTH, &maxLength);
+
+		std::vector<GLchar> errorLog(maxLength);
+		glGetShaderInfoLog(fragmentShaderId, maxLength, &maxLength, &errorLog[0]);
+
+		std::cout << &errorLog.at(0) << std::endl;
 		throw std::runtime_error("fragment shader failed to initialise");
 	}
 
@@ -75,7 +84,6 @@ Shader::Shader(const std::string& _vertPath, const std::string& _fragPath)
 	{
 		throw std::runtime_error("program failed to initialise");
 	}
-
 
 	//detatch shaders
 	glDetachShader(m_progId, vertexShaderId);

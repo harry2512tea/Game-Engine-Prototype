@@ -12,6 +12,7 @@
 #include "ObjectScript.h"
 #include "Kinematic.h"
 #include "Plane.h"
+#include "Lights.h"
 
 class Object
 {
@@ -29,7 +30,7 @@ public:
 	~Object();
 
 	void Update(float DeltaTime);
-	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam);
+	void DrawObject(Shader& shad, SDL_Window *window, std::vector<DirectionalLight>& dirLights, std::vector<PointLight>& pointLights, glm::mat4 cam);
 
 	void translation(glm::vec3 movement);
 	void rotate(glm::vec3 _rotation);
@@ -60,6 +61,7 @@ private:
 
 	void GetVertices(const std::string& _modelPath);
 	void calculateAABB();
+	void GetUniformLocs(Shader shad);
 	
 	std::vector<glm::vec3> vertices;
 	std::vector<ObjectScript*> scripts;
@@ -74,8 +76,9 @@ private:
 	glm::vec3 minOffset, maxOffset = glm::vec3(0.0f);
 	float colliderRadius;
 	
+	void SetupLights(Shader shad, std::vector<DirectionalLight>& dirLights, std::vector<PointLight>& pointLights);
 	
-	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc;
+	GLuint projectionLoc, modelLoc, viewLoc, PointNoLoc, DirNoLoc;
 	int width, height;
 	glm::mat4 setModelRotation(glm::mat4 model);
 

@@ -27,11 +27,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	GetUniformLocs(shad);
 	
 }
 
@@ -51,11 +47,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	GetUniformLocs(shad);
 	
 }
 
@@ -75,11 +67,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	GetUniformLocs(shad);
 
 }
 
@@ -99,13 +87,8 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	GetUniformLocs(shad);
 	
-
 }
 
 Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot, glm::vec3 _scale) : Rigidbody(this)
@@ -122,11 +105,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	GetVertices(_modelPath);
 	calculateAABB();
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	GetUniformLocs(shad);
 	
 }
 
@@ -146,13 +125,8 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	GetVertices(_modelPath);
 	calculateAABB();
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
+	GetUniformLocs(shad);
 
-	
-	
 }
 
 Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos) : Rigidbody(this)
@@ -169,12 +143,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos) : Rigi
 	GetVertices(_modelPath);
 	calculateAABB();
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
-
+	GetUniformLocs(shad);
 	
 }
 
@@ -192,13 +161,7 @@ Object::Object(const std::string& _modelPath, Shader shad) : Rigidbody(this)
 	GetVertices(_modelPath);
 	calculateAABB();
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
-	
-
+	GetUniformLocs(shad);
 }
 
 Object::~Object()
@@ -209,6 +172,16 @@ Object::~Object()
 	}*/
 }
 
+void Object::GetUniformLocs(Shader shad)
+{
+	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
+	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
+	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
+	//lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
+	//lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	PointNoLoc = glGetUniformLocation(shad.getProgId(), "No_Point_Lights");
+	DirNoLoc = glGetUniformLocation(shad.getProgId(), "No_Dir_Lights");
+}
 void Object::GetVertices(const std::string& _modelPath)
 {
 	FILE* file;
@@ -280,7 +253,7 @@ void Object::calculateAABB()
 	
 }
 
-void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam)
+void Object::DrawObject(Shader& shad, SDL_Window *window, std::vector<DirectionalLight>& dirLights, std::vector<PointLight>& pointLights, glm::mat4 cam)
 {
 	SDL_GetWindowSize(window, &width, &height);
 	
@@ -293,9 +266,9 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	model = glm::translate(model, position);
 	model = setModelRotation(model);
 
-	glUniform3f(lightLoc, lightPos.x, lightPos.y, lightPos.z);
+	//glUniform3f(lightLoc, lightPos.x, lightPos.y, lightPos.z);
 
-	glUniform3f(lightColLoc, lightCol.x, lightCol.y, lightCol.z);
+	//glUniform3f(lightColLoc, lightCol.x, lightCol.y, lightCol.z);
 
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -304,7 +277,7 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	// Upload the projection matrix
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-
+	SetupLights(shad, dirLights, pointLights);
 
 	glBindVertexArray(objectModel.vaoId);
 	glBindTexture(GL_TEXTURE_2D, objectModel.textureId);
@@ -314,6 +287,33 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 
 	shad.unUse();
 
+}
+
+void Object::SetupLights(Shader shad, std::vector<DirectionalLight>& dirLights, std::vector<PointLight>& pointLights)
+{
+	for (int i = 0; i < dirLights.size(); i++)
+	{
+		std::string name = "dirLights[" + std::to_string(i) + "]";
+
+		shad.SetVec3(name + ".direction", dirLights[i].direction);
+		shad.SetVec3(name + ".ambient", dirLights[i].ambient);
+		shad.SetVec3(name + ".diffuse", dirLights[i].diffuse);
+		shad.SetVec3(name + ".specular", dirLights[i].specular);
+	}
+
+	for (int i = 0; i < pointLights.size(); i++)
+	{
+		std::string name = "pointLights[" + std::to_string(i) + "]";
+
+		shad.SetVec3(name + ".position", pointLights[i].position);
+		shad.SetVec3(name + ".ambient", pointLights[i].ambient);
+		shad.SetVec3(name + ".diffuse", pointLights[i].diffuse);
+		shad.SetVec3(name + ".specular", pointLights[i].specular);
+
+		shad.SetFloat(name + ".constant", pointLights[i].constant);
+		shad.SetFloat(name + ".linear", pointLights[i].linear);
+		shad.SetFloat(name + ".quadratic", pointLights[i].quadratic);
+	}
 }
 
 void Object::Update(float DeltaTime)

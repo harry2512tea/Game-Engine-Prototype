@@ -7,11 +7,9 @@
 Scene::Scene(glm::vec3 light, SDL_Window *_window) 
 	: SceneShader("shaders/light.vert", "shaders/light.frag")
 {
-	LightPos = light;
 	window = _window;
 	camPos = glm::vec3(0.0f, 4.0f, 0.0f);
 	camRot = glm::vec3(-10.0f, 0.0f, 0.0f);
-	LightCol = glm::vec3(1.0f, 1.0f, 1.0f);
 	
 	CreateLevel();
 }
@@ -44,13 +42,16 @@ void Scene::DrawScene()
 	glEnable(GL_DEPTH_TEST);
 	for (Object obj : objects)
 	{
-		obj.DrawObject(SceneShader, window, LightPos, LightCol, cam);
+		obj.DrawObject(SceneShader, window, dirLights, pointLights, cam);
 	}
 	glDisable(GL_DEPTH_TEST);
 }
 
 void Scene::CreateLevel()
 {
+	pointLights.push_back(PointLight(glm::vec3(10.0f, 10.0f, 10.0f)));
+
+
 	objects.push_back(Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -5.0f, -20.0f), glm::vec3(0.0f), glm::vec3(0.5f)));
 	objects.push_back(Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(2, 0, -20)));
 	objects.push_back(Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(-2, 0, -20), glm::vec3(0, 90, 0)));
