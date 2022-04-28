@@ -101,22 +101,53 @@ bool KinematicController::checkCollision(Object* obj1, Object* obj2)
 
 bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 {
-	glm::vec3 ray = glm::normalize(-Sphere->GetRigidbody()->GetVelocity());
+	glm::vec3 ray = glm::normalize(Sphere->GetRigidbody()->GetVelocity());
+	//ray = Sphere->GetRigidbody()->GetVelocity();
 	std::vector<Plane*>& planes = AABB->GetPlanes();
 
 	glm::vec3 IntersectPoint;
-	int planeNo;
+	int planeNo = 0;
+
+	bool intersected = false;
+	float pointDist;
+	glm::vec3 TempIntersectPoint;
 
 	for (int i = 0; i < planes.size(); i++)
 	{
-		if (planes[i]->CheckIntersection(ray, Sphere->GetPosition(), IntersectPoint))
+		if (planes[i]->CheckIntersection(ray, Sphere->GetPosition(), TempIntersectPoint))
 		{
-			planeNo = i;
-			break;
+			if (!intersected)
+			{
+				intersected = true;
+				IntersectPoint = TempIntersectPoint;
+				planeNo = i;
+				pointDist = (TempIntersectPoint.x - Sphere->GetPosition().x) * (TempIntersectPoint.x - Sphere->GetPosition().x) +
+					(TempIntersectPoint.y - Sphere->GetPosition().y) * (TempIntersectPoint.y - Sphere->GetPosition().y) +
+					(TempIntersectPoint.z - Sphere->GetPosition().z) * (TempIntersectPoint.z - Sphere->GetPosition().z);
+			}
+			else
+			{
+				float newPointDist = (TempIntersectPoint.x - Sphere->GetPosition().x) * (TempIntersectPoint.x - Sphere->GetPosition().x) +
+					(TempIntersectPoint.y - Sphere->GetPosition().y) * (TempIntersectPoint.y - Sphere->GetPosition().y) +
+					(TempIntersectPoint.z - Sphere->GetPosition().z) * (TempIntersectPoint.z - Sphere->GetPosition().z);
+
+				if (newPointDist < pointDist)
+				{
+					IntersectPoint = TempIntersectPoint;
+					planeNo = i;
+					pointDist = newPointDist;
+				}
+			}
 		}
 	}
+
+	glm::vec3 desiredPos, actualPos;
+	actualPos = Sphere->GetPosition();
+	desiredPos = IntersectPoint + (-ray*Sphere->GetSphereRadius());
+
 	float Mag = glm::dot(Sphere->GetRigidbody()->GetVelocity(), -planes[planeNo]->normal);
-	Sphere->GetRigidbody()->AddVelocity(planes[planeNo]->normal * Mag * 2.0f);
+	Sphere->GetRigidbody()->AddForce(planes[planeNo]->normal * Mag * 2.0f, VelocityChange);
+	Sphere->SetPosition(desiredPos);
 	return true;
 }
 
@@ -139,18 +170,22 @@ bool KinematicController::SphereSphereCollision(Object* obj1, Object* obj2)
 	{
 		glm::vec3 TotalMomentum = (Mag1 * CPVector) + (Mag2 * CPVector);
 		glm::vec3 velAfterCol = TotalMomentum / (mass1 + mass2);
-		obj1->GetRigidbody()->AddVelocity(velAfterCol);
-		obj1->GetRigidbody()->AddVelocity(velAfterCol);
+		//obj1->GetRigidbody()->AddVelocity(velAfterCol);
+		//obj2->GetRigidbody()->AddVelocity(velAfterCol);
+		obj1->GetRigidbody()->AddForce(-velAfterCol, VelocityChange);
+		obj2->GetRigidbody()->AddForce(-velAfterCol, VelocityChange);
 	}
 	else if (!obj1->GetRigidbody()->getKinematic())
 	{
 		glm::vec3 velAfterCol = (Mag1 * CPVector) / mass1;
-		obj1->GetRigidbody()->AddVelocity(-velAfterCol);
+		//obj1->GetRigidbody()->AddVelocity(-velAfterCol);
+		obj1->GetRigidbody()->AddForce(-velAfterCol, VelocityChange);
 	}
 	else
 	{
 		glm::vec3 velAfterCol = (Mag2 * CPVector) / mass2;
-		obj2->GetRigidbody()->AddVelocity(-velAfterCol);
+		//obj2->GetRigidbody()->AddVelocity(-velAfterCol);
+		obj2->GetRigidbody()->AddForce(-velAfterCol, VelocityChange);
 	}
 	
 	return true;
@@ -159,6 +194,33 @@ bool KinematicController::SphereSphereCollision(Object* obj1, Object* obj2)
 void KinematicController::CheckPreciseCollision(Object* obj1, Object* obj2)
 {
 	if (!obj1->GetRigidbody()->getKinematic() && !obj2->GetRigidbody()->getKinematic())
+	{
+		switch (obj1->GetColliderType())
+		{
+		case 0:
+			switch (obj2->GetColliderType())
+			{
+			case 0:
+				break;
+			case 1:
+				//SpherePlaneCollision(obj2, obj1);
+				break;
+			}
+			break;
+		case 1:
+			switch (obj2->GetColliderType())
+			{
+			case 0:
+				//SpherePlaneCollision(obj1, obj2);
+				break;
+			case 1:
+				SphereSphereCollision(obj1, obj2);
+				break;
+			}
+			break;
+		}
+	}
+	else
 	{
 		switch (obj1->GetColliderType())
 		{
@@ -179,19 +241,11 @@ void KinematicController::CheckPreciseCollision(Object* obj1, Object* obj2)
 				SpherePlaneCollision(obj1, obj2);
 				break;
 			case 1:
-				SphereSphereCollision(obj1, obj2);
+				//SphereSphereCollision(obj1, obj2);
 				break;
 			}
 			break;
 		}
-	}
-	else if (!obj1->GetRigidbody()->getKinematic())
-	{
-
-	}
-	else if (!obj2->GetRigidbody()->getKinematic())
-	{
-
 	}
 }
 

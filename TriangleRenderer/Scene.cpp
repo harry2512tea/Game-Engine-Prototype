@@ -37,31 +37,39 @@ void Scene::updateObjects(float DeltaTime)
 	Input* input = Input::getInstance();
 	if (input->GetAxis("Forward"))
 	{
-		camPos += glm::vec3(0.0f, 0.0f, -1.0f);
+		camPos += glm::vec3(0.0f, 0.0f, -0.5f);
 	}
 
 	if (input->GetAxis("Back"))
 	{
-		camPos += glm::vec3(0.0f, 0.0f, 1.0f);
+		camPos += glm::vec3(0.0f, 0.0f, 0.5f);
 	}
 
 	if (input->GetAxis("Left"))
 	{
-		camPos += glm::vec3(-1.0f, 0.0f, 0.0f);
+		camPos += glm::vec3(-0.5f, 0.0f, 0.0f);
 	}
 
 	if (input->GetAxis("Right"))
 	{
-		camPos += glm::vec3(1.0f, 0.0f, 0.0f);
+		camPos += glm::vec3(0.5f, 0.0f, 0.0f);
 	}
 
 	if (input->GetAxis("Up"))
 	{
-		camPos += glm::vec3(0.0f, 1.0f, 0.0f);
+		camPos += glm::vec3(0.0f, 0.5f, 0.0f);
 	}
 	if (input->GetAxis("Down"))
 	{
-		camPos += glm::vec3(0.0f, -1.0f, 0.0f);
+		camPos += glm::vec3(0.0f, -0.5f, 0.0f);
+	}
+	if (input->GetAxis("RotLeft"))
+	{
+		camRot += glm::vec3(0.0f, 2.0f, 0.0f);
+	}
+	if (input->GetAxis("RotRight"))
+	{
+		camRot += glm::vec3(0.0f, -2.0f, 0.0f);
 	}
 }
 
@@ -84,7 +92,8 @@ void Scene::CreateLevel()
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -5.0f, -20.0f), glm::vec3(0.0f), glm::vec3(0.5f)));
 	objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(2, 4, -20)));
 	objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(-2, 4, -20), glm::vec3(0, 90, 0)));
-	objects.push_back(new Object("Models/Ball/sphere.obj", "Models/Ball/WelcomeMatClear_diffuse.jpg", SceneShader, glm::vec3(-0, 4, -10)));
+	objects.push_back(new Object("Models/Ball/sphere.obj", "Models/Ball/WelcomeMatClear_diffuse.jpg", SceneShader, glm::vec3(-0, 5, -10)));
+	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, 8.0f, -20.0f), glm::vec3(0.0f), glm::vec3(0.5f)));
 
 	objects[3]->GetRigidbody()->SetColliderType(1);
 	objects[3]->GetRigidbody()->setKinematic(false);

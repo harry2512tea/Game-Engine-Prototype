@@ -60,7 +60,11 @@ private:
 
 	void GetVertices(const std::string& _modelPath);
 	void calculateAABB();
-	
+	void UpdateCollider() {
+		min = (initialMin * scale) + position;
+		max = (initialMax * scale) + position;
+	};
+
 	std::vector<glm::vec3> vertices;
 	std::vector<ObjectScript*> scripts;
 	std::vector<Plane*> Planes;
@@ -71,7 +75,7 @@ private:
 	glm::vec3 rotation = glm::vec3(0.0f);
 
 	//bounding boxes
-	glm::vec3 minOffset, maxOffset = glm::vec3(0.0f);
+	glm::vec3 initialMin, initialMax = glm::vec3(0.0f);
 	float colliderRadius;
 	
 	

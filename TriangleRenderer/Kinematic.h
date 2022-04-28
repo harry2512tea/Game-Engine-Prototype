@@ -6,6 +6,12 @@
 class Object;
 class KinematicController;
 
+enum ForceMode
+{
+	VelocityChange,
+	Impulse
+};
+
 class Kinematic
 {
 public:
@@ -18,6 +24,8 @@ public:
 
 	glm::vec3 GetMomentum() { return momentum; };
 	glm::vec3 GetVelocity() { return velocity; };
+
+	void AddForce(glm::vec3 Force, ForceMode Mode);
 	void AddVelocity(glm::vec3 vel) { velocity += vel; };
 	void SetVelocity(glm::vec3 vel) { velocity = vel; };
 
