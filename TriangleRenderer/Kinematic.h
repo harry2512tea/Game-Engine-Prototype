@@ -12,8 +12,6 @@ public:
 	Kinematic(Object* obj);
 	void Update(float DeltaTime);
 	
-	
-	//bool CheckCollision(Object& obj);
 
 	float GetMass() { return mass; };
 	void SetMass(float _mass) { mass = _mass; };
