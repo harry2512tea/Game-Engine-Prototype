@@ -1,25 +1,20 @@
 #pragma once
 #include "Plane.h"
 
-Plane::Plane(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 Position)
+Plane::Plane(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 Position, glm::vec3 Scale)
 {
 	initialMax = A;
 	initialMin = B;
 	initialC = C;
 
-	max = initialMax + Position;
-	min = initialMin + Position;
-	glm::vec3 CalcC = initialC + Position;
-	//calculating the plane's normal
-	normal = glm::cross((max - CalcC), (min - CalcC));
-	
+	UpdatePoints(Position, Scale);
 }
 
-void Plane::UpdatePoints(glm::vec3 Position)
+void Plane::UpdatePoints(glm::vec3 Position, glm::vec3 Scale)
 {
-	max = initialMax + Position;
-	min = initialMin + Position;
-	glm::vec3 CalcC = initialC + Position;
+	max = (initialMax * Scale) + Position;
+	min = (initialMin * Scale) + Position;
+	glm::vec3 CalcC = (initialC * Scale) + Position;
 	//calculating the plane's normal
 	normal = glm::cross((max - CalcC), (min - CalcC));
 }

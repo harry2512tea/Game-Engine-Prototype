@@ -33,7 +33,7 @@ private:
 	
 	Object* attachedObj;
 	bool isKinematic = true;
-	int colliderType;
+	int colliderType = 0;
 	float mass = 1;
 	glm::vec3 momentum;
 	glm::vec3 velocity;

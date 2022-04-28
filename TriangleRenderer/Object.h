@@ -42,7 +42,7 @@ public:
 
 	int GetColliderType();
 	float GetSphereRadius();
-	void UpdatePhysics(float DeltaTime, std::vector<Object>& objs, int address);
+	void UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address);
 
 	Kinematic* GetRigidbody() { return &Rigidbody; };
 

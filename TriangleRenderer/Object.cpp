@@ -266,17 +266,17 @@ void Object::calculateAABB()
 	maxOffset = glm::vec3(max_x, max_y, max_z);
 	min = position + minOffset;
 	max = position + maxOffset;
-	colliderRadius = size.x/2;
+	colliderRadius = max_y;
 	//std::cout << "size:" << size.x << " " << size.y << " " << size.z << std::endl;
 	//std::cout << "Min:" << min.x << " " << min.y << " " << min.z << std::endl;
 	//std::cout << "Max:" << max.x << " " << max.y << " " << max.z << std::endl;
 
-	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), position));
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_z, min_y, min_x), glm::vec3(max_x, min_y, max_z), position));
-	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_z, min_y, min_x), glm::vec3(min_x, min_y, min_z), position));
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position));
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, max_y, max_z), position));
-	Planes.push_back(new Plane(glm::vec3(min_x, min_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position));
+	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), position, scale));
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_z, min_y, min_x), glm::vec3(max_x, min_y, max_z), position, scale));
+	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_z, min_y, min_x), glm::vec3(min_x, min_y, min_z), position, scale));
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale));
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, max_y, max_z), position, scale));
+	Planes.push_back(new Plane(glm::vec3(min_x, min_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position, scale));
 	
 }
 
@@ -324,7 +324,7 @@ void Object::Update(float DeltaTime)
 	}
 	for (int i = 0; i < Planes.size(); i++)
 	{
-		Planes[i]->UpdatePoints(position);
+		Planes[i]->UpdatePoints(position, scale);
 	}
 	
 }
@@ -357,7 +357,12 @@ void Object::StartScripts()
 //object movement functions
 void Object::translation(glm::vec3 movement)
 {
+	std::cout << "--------------------" << std::endl;
+	std::cout << position.y << std::endl;
+	std::cout << movement.y << std::endl;
 	position += movement;
+	std::cout << position.y << std::endl;
+	std::cout << "***************" << std::endl;
 }
 
 void Object::rotate(glm::vec3 _rotation)
@@ -429,8 +434,8 @@ float Object::GetSphereRadius()
 	return colliderRadius;
 }
 
-void Object::UpdatePhysics(float DeltaTime, std::vector<Object>& objs, int address)
+void Object::UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address)
 {
 	Rigidbody.Update(DeltaTime);
-	std::cout << "Position: " << position.x << " " << position.y << " " << position.z << std::endl;
+	//std::cout << "Position: " << position.x << " " << position.y << " " << position.z << std::endl;
 }

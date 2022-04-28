@@ -21,6 +21,7 @@ private:
 		{ "Back", SDL_SCANCODE_S },
 		{ "Left", SDL_SCANCODE_A },
 		{ "Right", SDL_SCANCODE_D },
-		{ "Jump", SDL_SCANCODE_SPACE }
+		{ "Up", SDL_SCANCODE_SPACE },
+		{ "Down", SDL_SCANCODE_C}
 	};
 };

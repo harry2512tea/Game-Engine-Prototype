@@ -13,10 +13,10 @@ void movement::Start()
 
 void movement::Update()
 {
-	attachedObj->translation(glm::vec3(0.01f, 0.0f, 0.0f));
+	attachedObj->translation(glm::vec3(0.1f, 0.0f, 0.0f));
 	if (attachedObj->GetPosition().x > 10)
 	{
-		attachedObj->SetPosition(glm::vec3(-10.0f, 1.0f, 0.0f));
+		attachedObj->SetPosition(glm::vec3(-10.0f, 1.0f, -20.0f));
 	}
 	KeyInput();
 
@@ -47,9 +47,9 @@ void movement::KeyInput()
 		std::cout << "Right" << std::endl;
 	}
 
-	if (input->GetAxis("Jump"))
+	if (input->GetAxis("Up"))
 	{
-		std::cout << "Jump" << std::endl;
+		std::cout << "Up" << std::endl;
 	}
 	
 }

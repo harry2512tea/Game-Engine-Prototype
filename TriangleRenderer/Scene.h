@@ -11,6 +11,7 @@
 #include "ObjectScript.h"
 #include "movement.h"
 #include "KinematicController.h"
+#include "Input.h"
 
 class Scene
 {
@@ -23,7 +24,7 @@ public:
 
 private:
 	KinematicController* kin = KinematicController::getInstance();
-	std::vector<Object> objects;
+	std::vector<Object*> objects;
 	glm::vec3 LightPos, LightCol, camPos, camRot;
 	glm::mat4 cam;
 	SDL_Window *window;
