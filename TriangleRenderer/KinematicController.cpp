@@ -35,6 +35,8 @@ void KinematicController::CheckGeneralCollisions(std::vector<Object*>& objs)
 
 bool KinematicController::checkCollision(Object* obj1, Object* obj2)
 {
+	// 0 = AABB
+	// 1 = Sphere
 	float x, y, z, dist;
 	glm::vec3 sphere;
 	switch (obj1->GetColliderType())
@@ -54,9 +56,10 @@ bool KinematicController::checkCollision(Object* obj1, Object* obj2)
 			y = fmaxf(obj1->min.y, fminf(sphere.y, obj1->max.y));
 			z = fmaxf(obj1->min.z, fminf(sphere.z, obj1->max.z));
 
-			dist = sqrt((x - sphere.x) * (x - sphere.x) +
+			dist = sqrt(
+				(x - sphere.x) * (x - sphere.x) +
 				(y - sphere.y) * (y - sphere.y) +
-				(z - sphere.z) * (x - sphere.z)
+				(z - sphere.z) * (z - sphere.z)
 			);
 
 			return dist < obj2->GetSphereRadius();
@@ -73,9 +76,10 @@ bool KinematicController::checkCollision(Object* obj1, Object* obj2)
 			y = fmaxf(obj2->min.y, fminf(sphere.y, obj2->max.y));
 			z = fmaxf(obj2->min.z, fminf(sphere.z, obj2->max.z));
 
-			dist = sqrt((x - sphere.x) * (x - sphere.x) +
+			dist = sqrt(
+				(x - sphere.x) * (x - sphere.x) +
 				(y - sphere.y) * (y - sphere.y) +
-				(z - sphere.z) * (x - sphere.z)
+				(z - sphere.z) * (z - sphere.z)
 			);
 
 			return dist < obj1->GetSphereRadius();
@@ -106,7 +110,7 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 	std::vector<Plane*>& planes = AABB->GetPlanes();
 
 	glm::vec3 IntersectPoint;
-	int planeNo = 0;
+	int planeNo = -1;
 
 	bool intersected = false;
 	float pointDist;
@@ -140,15 +144,18 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 			}
 		}
 	}
-
+	
 	glm::vec3 desiredPos, actualPos;
 	actualPos = Sphere->GetPosition();
-	desiredPos = IntersectPoint + (-ray*Sphere->GetSphereRadius());
-
-	float Mag = glm::dot(Sphere->GetRigidbody()->GetVelocity(), -planes[planeNo]->normal);
-	Sphere->GetRigidbody()->AddForce(planes[planeNo]->normal * Mag * 2.0f, VelocityChange);
-	Sphere->SetPosition(desiredPos);
-	return true;
+	desiredPos = IntersectPoint + (-ray * Sphere->GetSphereRadius() * 1.1f);
+	if (planeNo > -1)
+	{
+		float Mag = glm::dot(Sphere->GetRigidbody()->GetVelocity(), -planes[planeNo]->normal);
+		Sphere->GetRigidbody()->AddForce(planes[planeNo]->normal * Mag * 2.0f, VelocityChange);
+		Sphere->SetPosition(desiredPos);
+		return true;
+	}
+	return false;
 }
 
 bool KinematicController::SphereSphereCollision(Object* obj1, Object* obj2)
@@ -247,6 +254,29 @@ void KinematicController::CheckPreciseCollision(Object* obj1, Object* obj2)
 			break;
 		}
 	}
+}
+
+glm::vec3 KinematicController::nearestPoint(glm::vec3 posOnPlane, Object* AABB)
+{
+	glm::vec3 min = AABB->min;
+	glm::vec3 max = AABB->max;
+
+	float x, y, z;
+	if (posOnPlane.x < min.x)x = min.x;
+	else x = posOnPlane.x;
+	if (posOnPlane.y < min.y)y = min.y;
+	else y = posOnPlane.y;
+	if (posOnPlane.z < min.z)z = min.z;
+	else z = posOnPlane.z;
+
+	if (posOnPlane.x > max.x)x = max.x;
+	else x = posOnPlane.x;
+	if (posOnPlane.y > max.y)y = max.y;
+	else y = posOnPlane.y;
+	if (posOnPlane.z > max.z)z = max.z;
+	else z = posOnPlane.z;
+
+	return glm::vec3(x, y, z);
 }
 
 void KinematicController::Update(std::vector<Object*>& objs)

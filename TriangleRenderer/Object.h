@@ -4,6 +4,7 @@
 #include <string>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/fwd.hpp>
 #include <SDL2/SDL.h>
 #include <list>
 #include <vector>
@@ -61,6 +62,9 @@ private:
 	void GetVertices(const std::string& _modelPath);
 	void calculateAABB();
 	void UpdateCollider() {
+		//min = ((initialMin * rotationQuat) * scale) + position;
+		//max = ((initialMax * rotationQuat) * scale) + position;
+
 		min = (initialMin * scale) + position;
 		max = (initialMax * scale) + position;
 	};
@@ -73,6 +77,7 @@ private:
 	glm::vec3 scale = glm::vec3(0.0f);
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f);
+	glm::quat rotationQuat;
 
 	//bounding boxes
 	glm::vec3 initialMin, initialMax = glm::vec3(0.0f);

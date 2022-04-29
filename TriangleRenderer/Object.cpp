@@ -274,6 +274,8 @@ void Object::GetVertices(const std::string& _modelPath)
 
 void Object::calculateAABB()
 {
+
+	rotationQuat = glm::quat(rotation);
 	GLfloat
 		min_x, max_x,
 		min_y, max_y,
@@ -304,13 +306,20 @@ void Object::calculateAABB()
 	//std::cout << "Min:" << min.x << " " << min.y << " " << min.z << std::endl;
 	//std::cout << "Max:" << max.x << " " << max.y << " " << max.z << std::endl;
 
-	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), position, scale));
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_z, min_y, min_x), glm::vec3(max_x, min_y, max_z), position, scale));
-	Planes.push_back(new Plane(glm::vec3(min_x, max_y, min_z), glm::vec3(max_z, min_y, min_x), glm::vec3(min_x, min_y, min_z), position, scale));
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale));
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, max_y, max_z), position, scale));
-	Planes.push_back(new Plane(glm::vec3(min_x, min_y, min_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position, scale));
+	//0
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, max_y, min_z), position, scale, rotation));
+	//1
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position, scale, rotation));
+	//2
+	Planes.push_back(new Plane(glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, min_y, max_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
+	//3
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
+	//4
+	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, min_z), position, scale, rotation));
+	//5
+	Planes.push_back(new Plane(glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, min_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
 	
+	std::cout << std::endl;
 }
 
 void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam)
@@ -358,7 +367,7 @@ void Object::Update(float DeltaTime)
 	}
 	for (int i = 0; i < Planes.size(); i++)
 	{
-		Planes[i]->UpdatePoints(position, scale);
+		Planes[i]->UpdatePoints(position, scale, rotation);
 	}
 	
 }
@@ -397,11 +406,12 @@ void Object::StartScripts()
 //object movement functions
 void Object::translation(glm::vec3 movement)
 {
+	std::cout << "Translating" << std::endl;
 	std::cout << "--------------------" << std::endl;
-	std::cout << position.y << std::endl;
-	std::cout << movement.y << std::endl;
+	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	std::cout << movement.x << " " << movement.y << " " << movement.z << std::endl;
 	position += movement;
-	std::cout << position.y << std::endl;
+	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
 	std::cout << "***************" << std::endl;
 }
 
@@ -412,8 +422,15 @@ void Object::rotate(glm::vec3 _rotation)
 
 void Object::SetPosition(glm::vec3 pos)
 {
+	//position = pos;
+	std::cout << "Setting Position" << std::endl;
+	std::cout << "--------------------" << std::endl;
+	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	position = pos;
-	//std::cout << position.y;
+	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	std::cout << "***************" << std::endl;
+	UpdateCollider();
 }
 
 void Object::SetRotation(glm::vec3 rot)

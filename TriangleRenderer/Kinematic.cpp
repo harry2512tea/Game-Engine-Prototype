@@ -8,7 +8,7 @@
 
 Kinematic::Kinematic(Object* obj) : attachedObj(obj)
 {
-	velocity = glm::vec3(0.0f, -1.0f, 0.0f);
+	velocity = glm::vec3(2.5f, 0.0f, -0.0f);
 }
 
 void Kinematic::Update(float DeltaTime)

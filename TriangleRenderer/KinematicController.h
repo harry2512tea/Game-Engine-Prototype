@@ -20,5 +20,6 @@ private:
 
 	bool SpherePlaneCollision(Object* Sphere, Object* Plane);
 	bool SphereSphereCollision(Object* obj1, Object* obj2);
+	glm::vec3 nearestPoint(glm::vec3 posOnPlane, Object* AABB);
 	static KinematicController* instance;
 };
