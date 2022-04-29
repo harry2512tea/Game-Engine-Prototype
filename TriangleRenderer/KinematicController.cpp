@@ -144,14 +144,18 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 			}
 		}
 	}
+
+	
 	
 	glm::vec3 desiredPos, actualPos;
 	actualPos = Sphere->GetPosition();
-	desiredPos = IntersectPoint + (-ray * Sphere->GetSphereRadius() * 1.1f);
 	if (planeNo > -1)
 	{
+		planes[planeNo]->CheckIntersection(-planes[planeNo]->normal, Sphere->GetPosition(), IntersectPoint);
+		desiredPos = IntersectPoint + (planes[planeNo]->normal * Sphere->GetSphereRadius() * 1.0f);
 		float Mag = glm::dot(Sphere->GetRigidbody()->GetVelocity(), -planes[planeNo]->normal);
-		Sphere->GetRigidbody()->AddForce(planes[planeNo]->normal * Mag * 2.0f, VelocityChange);
+		glm::vec3 force = planes[planeNo]->normal * Mag * 2.0f;
+		Sphere->GetRigidbody()->AddForce(force, VelocityChange);
 		Sphere->SetPosition(desiredPos);
 		return true;
 	}

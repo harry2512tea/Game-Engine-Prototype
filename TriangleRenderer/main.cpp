@@ -99,9 +99,18 @@ int main()
 
 		SDL_GL_SwapWindow(window);
 
-		currentTime = SDL_GetTicks();
-		deltaTime = (float)(currentTime - lastTime) / 1000.0f;
+		//currentTime = SDL_GetTicks();
+		//deltaTime = (float)(currentTime - lastTime) / 1000.0f;
+		//lastTime = currentTime;
+
+		currentTime = SDL_GetPerformanceCounter();
+		deltaTime = (float)((currentTime - lastTime) / (float)SDL_GetPerformanceFrequency());
 		lastTime = currentTime;
+
+		if (deltaTime > 0.1f)
+		{
+			deltaTime = 0.1f;
+		}
 
 		mainScene.updateObjects(deltaTime);
 

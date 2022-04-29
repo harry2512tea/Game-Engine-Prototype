@@ -8,7 +8,7 @@
 
 Kinematic::Kinematic(Object* obj) : attachedObj(obj)
 {
-	velocity = glm::vec3(2.5f, 0.0f, -0.0f);
+	velocity = glm::vec3(5.0f, 0.0f, -0.0f);
 }
 
 void Kinematic::Update(float DeltaTime)
@@ -21,12 +21,12 @@ void Kinematic::Update(float DeltaTime)
 		glm::vec3 gravity = kin->GetGravity();
 		//AddVelocity(gravity);
 		//std::cout << DeltaTime << std::endl;
-		AddForce(gravity * 0.1f, VelocityChange);
+		AddForce(gravity * DeltaTime, VelocityChange);
 		//std::cout << DeltaTime;
 		//attachedObj->SetPosition(currentPos + (velocity /* * DeltaTime*/));
 		std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 		std::cout << "DeltaTime: " << DeltaTime << std::endl;
-		attachedObj->translation(glm::vec3(velocity.x, velocity.y, velocity.z) * 0.017f);
+		attachedObj->translation(glm::vec3(velocity.x, velocity.y, velocity.z) * DeltaTime);
 		momentum = CalculateMomentum();
 	}
 }
