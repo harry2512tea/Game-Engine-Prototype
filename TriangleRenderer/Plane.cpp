@@ -89,3 +89,5 @@ bool Plane::getIntersection(glm::vec3 Direction, glm::vec3 Origin, glm::vec3& In
 		return true;
 	}
 }
+
+

@@ -38,6 +38,7 @@ void Scene::updateObjects(float DeltaTime)
 	if (input->GetAxis("Start"))
 	{
 		objects[3]->GetRigidbody()->setKinematic(false);
+		objects[4]->GetRigidbody()->setKinematic(false);
 	}
 	if (input->GetAxis("Forward"))
 	{
@@ -100,6 +101,7 @@ void Scene::CreateLevel()
 	//objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(-10.0f, 8.0f, -20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.5f)));
 	//objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(10.0f, 4.0f, -20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.5f)));
 	objects.push_back(new Object("Models/Ball/sphere.obj", "Models/Ball/WelcomeMatClear_diffuse.jpg", SceneShader, glm::vec3(-8, 5, -10)));
+	objects.push_back(new Object("Models/Ball/sphere.obj", "Models/Ball/WelcomeMatClear_diffuse.jpg", SceneShader, glm::vec3(0, 6, -10)));
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, 8.0f, -20.0f), glm::vec3(0.0f), glm::vec3(0.5f)));
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(-40.0f, -7.0f, -20.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 10.0f, 0.5f)));
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(40.0f, -7.0f, -20.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 10.0f, 0.5f)));
@@ -107,6 +109,13 @@ void Scene::CreateLevel()
 	objects[3]->GetRigidbody()->SetColliderType(1);
 	objects[3]->GetRigidbody()->setElasticity(0.95f);
 	objects[3]->GetRigidbody()->setFriction(0.1f);
+
+	objects[4]->GetRigidbody()->SetColliderType(1);
+	objects[4]->GetRigidbody()->setElasticity(0.95f);
+	objects[4]->GetRigidbody()->setFriction(0.1f);
+
+	objects[3]->GetRigidbody()->AddForce(glm::vec3(10.0f, 0.0f, 0.0f), VelocityChange);
+	objects[4]->GetRigidbody()->AddForce(glm::vec3(-15.0f, 0.0f, 0.0f), VelocityChange);
 
 	//objects[2]->AddScript(new movement(objects[2]));
 }

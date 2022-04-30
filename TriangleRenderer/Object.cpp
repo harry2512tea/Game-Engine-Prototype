@@ -274,8 +274,6 @@ void Object::GetVertices(const std::string& _modelPath)
 
 void Object::calculateAABB()
 {
-
-	rotationQuat = glm::quat(rotation);
 	GLfloat
 		min_x, max_x,
 		min_y, max_y,

@@ -18,3 +18,12 @@ public:
 private:
 	glm::quat Rotation;
 };
+
+struct meshPlane
+{
+	meshPlane(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 Position);
+
+	void UpdatePoints(glm::vec3 Position, glm::vec3 rotation);
+	bool CheckIntersection(glm::vec3 Direction, glm::vec3 Origin, glm::vec3& Intersect);
+	glm::vec3 A, B, C, normal;
+};

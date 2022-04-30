@@ -11,7 +11,7 @@
 
 #include "Shader.h"
 #include "ObjectScript.h"
-#include "Kinematic.h"
+#include "DynamicObject.h"
 #include "Plane.h"
 
 class Object
@@ -41,11 +41,13 @@ public:
 	void AddScript(ObjectScript* _script);
 	void StartScripts();
 
+	void GenMeshCollider();
+
 	int GetColliderType();
 	float GetSphereRadius();
 	void UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address);
 
-	Kinematic* GetRigidbody() { return &Rigidbody; };
+	DynamicObject* GetRigidbody() { return &Rigidbody; };
 
 	std::vector<Plane*>& GetPlanes() { return Planes; };
 
@@ -55,7 +57,7 @@ public:
 
 private:
 	
-	Kinematic Rigidbody;
+	DynamicObject Rigidbody;
 
 	GLuint GenTexture(const std::string& _texturePath);
 

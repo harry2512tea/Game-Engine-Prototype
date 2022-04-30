@@ -3,14 +3,14 @@
 #include <glm/glm.hpp>
 #include <glm/fwd.hpp>
 #include <glm/gtx/vector_angle.hpp>
-#include "Kinematic.h"
+#include "DynamicObject.h"
 #include "Object.h"
 
-class KinematicController
+class ObjectController
 {
 public:
 	void Update(std::vector<Object*>& objs, float deltaTime);
-	static KinematicController* getInstance();
+	static ObjectController* getInstance();
 	void CheckGeneralCollisions(std::vector<Object*>& objs);
 	void CheckPreciseCollision(Object* obj1, Object* obj2);
 	glm::vec3 GetGravity() { return Gravity; };
@@ -24,5 +24,5 @@ private:
 	bool SpherePlaneCollision(Object* Sphere, Object* Plane);
 	bool SphereSphereCollision(Object* obj1, Object* obj2);
 	glm::vec3 nearestPoint(glm::vec3 posOnPlane, Object* AABB);
-	static KinematicController* instance;
+	static ObjectController* instance;
 };

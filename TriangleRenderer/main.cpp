@@ -19,8 +19,8 @@
 
 int main()
 {
-	int windowWidth = 960;
-	int windowHeight = 540;
+	int windowWidth = 1440;
+	int windowHeight = 810;
 	SDL_Window *window = SDL_CreateWindow("haha window go brrrr", 
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		windowWidth, windowHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);

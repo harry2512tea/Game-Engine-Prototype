@@ -1,21 +1,21 @@
-#include "KinematicController.h"
+#include "ObjectController.h"
 #include "Plane.h"
 #include <vector>
 #include <iostream>
 
-KinematicController* KinematicController::instance = nullptr;
+ObjectController* ObjectController::instance = nullptr;
 
-KinematicController* KinematicController::getInstance()
+ObjectController* ObjectController::getInstance()
 {
 	if (!instance)
 	{
-		instance = new KinematicController();
+		instance = new ObjectController();
 	}
 
 	return instance;
 }
 
-void KinematicController::CheckGeneralCollisions(std::vector<Object*>& objs)
+void ObjectController::CheckGeneralCollisions(std::vector<Object*>& objs)
 {
 	for (int i = 0; i < objs.size(); i++)
 	{
@@ -33,7 +33,7 @@ void KinematicController::CheckGeneralCollisions(std::vector<Object*>& objs)
 	}
 }
 
-bool KinematicController::checkCollision(Object* obj1, Object* obj2)
+bool ObjectController::checkCollision(Object* obj1, Object* obj2)
 {
 	// 0 = AABB
 	// 1 = Sphere
@@ -94,7 +94,9 @@ bool KinematicController::checkCollision(Object* obj1, Object* obj2)
 				(a.z - b.z) * (a.z - b.z)
 			);
 
-			return dist < (obj1->GetSphereRadius() + obj2->GetSphereRadius());
+			dist = glm::distance(a, b);
+			float collisionDist = obj1->GetSphereRadius() + obj2->GetSphereRadius();
+			return dist <= collisionDist;
 			break;
 
 		}
@@ -103,7 +105,7 @@ bool KinematicController::checkCollision(Object* obj1, Object* obj2)
 	return false;
 }
 
-bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
+bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 {
 	glm::vec3 ray = glm::normalize(Sphere->GetRigidbody()->GetVelocity());
 	//ray = Sphere->GetRigidbody()->GetVelocity();
@@ -179,7 +181,7 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 
 		glm::vec3 newVel = linVel - velInDir;
 
-		Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.5f), VelocityChange);
+		Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.3f), VelocityChange);
 		velInDir = velocity - (Mag * -planes[planeNo]->normal);
 		//Sphere->GetRigidbody()->AddForce(-velInDir * (Sphere->GetRigidbody()->GetFriction()), VelocityChange);
 
@@ -192,6 +194,9 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 		//force = (velocity * Sphere->GetRigidbody()->GetElasticity()) - velocity;
 		//Sphere->GetRigidbody()->AddForce(force, VelocityChange);
 
+		Sphere->GetRigidbody()->AddForce(velocity * (1 - Sphere->GetRigidbody()->GetFriction()) - velocity, VelocityChange);
+
+
 		glm::vec3 rotVel = glm::cross(planes[planeNo]->normal * Sphere->GetSphereRadius(), Sphere->GetRigidbody()->GetVelocity());
 		Sphere->GetRigidbody()->SetRotationalVel(rotVel);
 		//std::cout << rotVel.x << " " << rotVel.y << " " << rotVel.z << std::endl;
@@ -202,7 +207,7 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 	return false;
 }
 
-bool KinematicController::SphereSphereCollision(Object* obj1, Object* obj2)
+bool ObjectController::SphereSphereCollision(Object* obj1, Object* obj2)
 {
 	glm::vec3 CollisionPoint;
 	glm::vec3 CPVector;
@@ -210,21 +215,32 @@ bool KinematicController::SphereSphereCollision(Object* obj1, Object* obj2)
 	float mass1 = obj1->GetRigidbody()->GetMass();
 	float mass2 = obj2->GetRigidbody()->GetMass();
 
+	glm::vec3 vel1 = obj1->GetRigidbody()->GetVelocity();
+	glm::vec3 vel2 = obj2->GetRigidbody()->GetVelocity();
+
+
 	CPVector = glm::normalize(obj1->GetPosition() - obj2->GetPosition());
-	CollisionPoint = obj1->GetSphereRadius() * CPVector;
+	CollisionPoint = (obj1->GetSphereRadius() * -CPVector) + obj1->GetPosition();
 
-	float Mag1 = glm::dot(obj1->GetRigidbody()->GetMomentum(), CPVector);
-	float Mag2 = glm::dot(obj2->GetRigidbody()->GetMomentum(), CPVector);
+	float Mag1 = glm::dot(obj1->GetRigidbody()->GetVelocity(), CPVector);
+	float Mag2 = glm::dot(obj2->GetRigidbody()->GetVelocity(), CPVector);
 
+	glm::vec3 actualPoint = obj2->GetPosition();
+	glm::vec3 desiredPoint = (-CPVector * obj2->GetSphereRadius()) + CollisionPoint;
+	obj2->SetPosition(desiredPoint);
 
 	if (!obj1->GetRigidbody()->getKinematic() && !obj2->GetRigidbody()->getKinematic())
 	{
-		glm::vec3 TotalMomentum = (Mag1 * CPVector) + (Mag2 * CPVector);
-		glm::vec3 velAfterCol = TotalMomentum / (mass1 + mass2);
-		//obj1->GetRigidbody()->AddVelocity(velAfterCol);
-		//obj2->GetRigidbody()->AddVelocity(velAfterCol);
-		obj1->GetRigidbody()->AddForce(-velAfterCol, VelocityChange);
-		obj2->GetRigidbody()->AddForce(-velAfterCol, VelocityChange);
+
+		obj2->GetRigidbody()->AddForce((Mag1 * CPVector) - (Mag2 * CPVector) * 1.0f * obj1->GetRigidbody()->GetElasticity(), VelocityChange);
+		obj1->GetRigidbody()->AddForce((Mag2 * CPVector) - (Mag1 * CPVector) * 1.0f * obj2->GetRigidbody()->GetElasticity(), VelocityChange);
+
+		
+
+
+		//glm::vec3 TotalMomentum = ((Mag1 * CPVector) * mass1) + ((Mag2 * CPVector) * mass2);
+		//glm::vec3 TotalVelocity = TotalMomentum / (mass1 + mass2);
+
 	}
 	else if (!obj1->GetRigidbody()->getKinematic())
 	{
@@ -242,7 +258,7 @@ bool KinematicController::SphereSphereCollision(Object* obj1, Object* obj2)
 	return true;
 }
 
-void KinematicController::CheckPreciseCollision(Object* obj1, Object* obj2)
+void ObjectController::CheckPreciseCollision(Object* obj1, Object* obj2)
 {
 	if (!obj1->GetRigidbody()->getKinematic() && !obj2->GetRigidbody()->getKinematic())
 	{
@@ -300,7 +316,7 @@ void KinematicController::CheckPreciseCollision(Object* obj1, Object* obj2)
 	}
 }
 
-glm::vec3 KinematicController::nearestPoint(glm::vec3 posOnPlane, Object* AABB)
+glm::vec3 ObjectController::nearestPoint(glm::vec3 posOnPlane, Object* AABB)
 {
 	glm::vec3 min = AABB->min;
 	glm::vec3 max = AABB->max;
@@ -323,7 +339,7 @@ glm::vec3 KinematicController::nearestPoint(glm::vec3 posOnPlane, Object* AABB)
 	return glm::vec3(x, y, z);
 }
 
-void KinematicController::Update(std::vector<Object*>& objs, float deltaTime)
+void ObjectController::Update(std::vector<Object*>& objs, float deltaTime)
 {
 	//std::cout << "Updating Collision Detection";
 	DeltaTime = deltaTime;

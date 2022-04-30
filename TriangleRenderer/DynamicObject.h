@@ -12,10 +12,10 @@ enum ForceMode
 	Impulse
 };
 
-class Kinematic
+class DynamicObject
 {
 public:
-	Kinematic(Object* obj);
+	DynamicObject(Object* obj);
 	void Update(float DeltaTime);
 	
 
@@ -46,6 +46,8 @@ public:
 private:
 	glm::vec3 CalculateMomentum();
 	
+	void Euler(float deltaTime);
+	void RungeKutta4(float deltaTime);
 	
 	Object* attachedObj;
 	bool isKinematic = true;
@@ -55,6 +57,7 @@ private:
 	float mass = 1;
 	glm::vec3 momentum;
 	glm::vec3 velocity;
+	glm::vec3 force;
 	glm::vec3 rotationalVel;
 
 };

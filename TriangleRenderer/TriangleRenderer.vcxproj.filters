@@ -39,10 +39,10 @@
     <ClCompile Include="Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Kinematic.cpp">
+    <ClCompile Include="DynamicObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KinematicController.cpp">
+    <ClCompile Include="ObjectController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Plane.cpp">
@@ -74,10 +74,10 @@
     <ClInclude Include="Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Kinematic.h">
+    <ClInclude Include="DynamicObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KinematicController.h">
+    <ClInclude Include="ObjectController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
