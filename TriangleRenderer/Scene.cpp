@@ -32,9 +32,13 @@ void Scene::updateObjects(float DeltaTime)
 
 	//std::cout << objects[3].GetRigidbody()->GetVelocity().x, objects[3].GetRigidbody()->GetVelocity().y, objects[3].GetRigidbody()->GetVelocity().z;
 
-	kin->Update(objects);
+	kin->Update(objects, DeltaTime);
 
 	Input* input = Input::getInstance();
+	if (input->GetAxis("Start"))
+	{
+		objects[3]->GetRigidbody()->setKinematic(false);
+	}
 	if (input->GetAxis("Forward"))
 	{
 		camPos += glm::vec3(0.0f, 0.0f, -0.5f);
@@ -76,8 +80,9 @@ void Scene::updateObjects(float DeltaTime)
 void Scene::DrawScene()
 {
 	cam = glm::mat4(1.0f);
-	cam = glm::translate(cam, -camPos);
 	cam = setCamRotation(cam);
+	cam = glm::translate(cam, -camPos);
+	
 
 	glEnable(GL_DEPTH_TEST);
 	for (int i = 0; i < objects.size(); i++)
@@ -100,7 +105,8 @@ void Scene::CreateLevel()
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(40.0f, -7.0f, -20.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 10.0f, 0.5f)));
 
 	objects[3]->GetRigidbody()->SetColliderType(1);
-	objects[3]->GetRigidbody()->setKinematic(false);
+	objects[3]->GetRigidbody()->setElasticity(0.95f);
+	objects[3]->GetRigidbody()->setFriction(0.1f);
 
 	//objects[2]->AddScript(new movement(objects[2]));
 }

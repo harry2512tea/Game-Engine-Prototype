@@ -28,6 +28,14 @@ public:
 	void AddForce(glm::vec3 Force, ForceMode Mode);
 	void AddVelocity(glm::vec3 vel) { velocity += vel; };
 	void SetVelocity(glm::vec3 vel) { velocity = vel; };
+	void SetRotationalVel(glm::vec3 rot) { rotationalVel = rot; };
+	glm::vec3 GetRotVel() { return rotationalVel; };
+
+	float GetElasticity() { return elasticity; };
+	void setElasticity(float value) { elasticity = value; };
+
+	float GetFriction() { return friction; };
+	void setFriction(float value) { friction = value; };
 
 	bool getKinematic() { return isKinematic; };
 	void setKinematic(bool value) { isKinematic = value; };
@@ -41,9 +49,12 @@ private:
 	
 	Object* attachedObj;
 	bool isKinematic = true;
+	bool gravityAffected = true;
 	int colliderType = 0;
+	float elasticity, friction;
 	float mass = 1;
 	glm::vec3 momentum;
 	glm::vec3 velocity;
+	glm::vec3 rotationalVel;
 
 };

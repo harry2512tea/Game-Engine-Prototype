@@ -24,6 +24,7 @@ private:
 		{ "Up", SDL_SCANCODE_SPACE },
 		{ "Down", SDL_SCANCODE_C },
 		{ "RotLeft", SDL_SCANCODE_Q },
-		{ "RotRight", SDL_SCANCODE_E }
+		{ "RotRight", SDL_SCANCODE_E },
+		{ "Start", SDL_SCANCODE_X }
 	};
 };

@@ -8,25 +8,26 @@
 
 Kinematic::Kinematic(Object* obj) : attachedObj(obj)
 {
-	velocity = glm::vec3(5.0f, 0.0f, -0.0f);
+	velocity = glm::vec3(0.0f, -0.0f, -0.0f);
+	rotationalVel = glm::vec3(0.0f, 0.0f, -15.0f);
 }
 
 void Kinematic::Update(float DeltaTime)
 {
 	if (!isKinematic)
 	{
-		KinematicController* kin = KinematicController::getInstance();
-		//glm::vec3 currentPos = attachedObj->GetPosition();
-		//std::cout << kin->GetGravity().y;
-		glm::vec3 gravity = kin->GetGravity();
-		//AddVelocity(gravity);
-		//std::cout << DeltaTime << std::endl;
-		AddForce(gravity * DeltaTime, VelocityChange);
-		//std::cout << DeltaTime;
-		//attachedObj->SetPosition(currentPos + (velocity /* * DeltaTime*/));
-		std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
+		if (gravityAffected)
+		{
+			KinematicController* kin = KinematicController::getInstance();
+			glm::vec3 gravity = kin->GetGravity();
+			AddForce(gravity * DeltaTime, VelocityChange);
+		}
+		
+		//std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 		std::cout << "DeltaTime: " << DeltaTime << std::endl;
 		attachedObj->translation(glm::vec3(velocity.x, velocity.y, velocity.z) * DeltaTime);
+		attachedObj->rotate(glm::degrees(rotationalVel) * DeltaTime);
+		std::cout << rotationalVel.x << " " << rotationalVel.y << " " << rotationalVel.z << std::endl;
 		momentum = CalculateMomentum();
 	}
 }

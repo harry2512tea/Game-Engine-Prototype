@@ -151,12 +151,50 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 	actualPos = Sphere->GetPosition();
 	if (planeNo > -1)
 	{
+		glm::vec3 velocity = Sphere->GetRigidbody()->GetVelocity();
+
 		planes[planeNo]->CheckIntersection(-planes[planeNo]->normal, Sphere->GetPosition(), IntersectPoint);
 		desiredPos = IntersectPoint + (planes[planeNo]->normal * Sphere->GetSphereRadius() * 1.0f);
-		float Mag = glm::dot(Sphere->GetRigidbody()->GetVelocity(), -planes[planeNo]->normal);
+		float Mag = glm::dot(velocity, -planes[planeNo]->normal);
+
+
+		glm::vec3 angVel = Sphere->GetRigidbody()->GetRotVel();
+		glm::vec3 linVel = angVel * Sphere->GetSphereRadius();
+		linVel = -glm::vec3(linVel.z, linVel.x, linVel.y);
+		//glm::angle
+		float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
+		glm::quat rotat = glm::angleAxis(angle, glm::vec3(0, 0, 1));
+		linVel = rotat * linVel;
+
+		if (abs(linVel.x) < 0.01f) linVel.x = 0;
+		if (abs(linVel.y) < 0.01f) linVel.y = 0;
+		if (abs(linVel.z) < 0.01f) linVel.z = 0;
+
+		glm::vec3 velInDir = velocity - (Mag * -planes[planeNo]->normal);
+
+		Sphere->GetRigidbody()->AddForce(-velInDir * (Sphere->GetRigidbody()->GetFriction()), VelocityChange);
+
+		velInDir += -velInDir * (Sphere->GetRigidbody()->GetFriction());
+
+		glm::vec3 newVel = linVel - velInDir;
+
+		Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.5f), VelocityChange);
+		
+
 		glm::vec3 force = planes[planeNo]->normal * Mag * 2.0f;
-		Sphere->GetRigidbody()->AddForce(force, VelocityChange);
+
+		Sphere->GetRigidbody()->AddForce(force * Sphere->GetRigidbody()->GetElasticity(), VelocityChange);
 		Sphere->SetPosition(desiredPos);
+
+		velocity = Sphere->GetRigidbody()->GetVelocity();
+		//force = (velocity * Sphere->GetRigidbody()->GetElasticity()) - velocity;
+		//Sphere->GetRigidbody()->AddForce(force, VelocityChange);
+
+		glm::vec3 rotVel = glm::cross(planes[planeNo]->normal * Sphere->GetSphereRadius(), Sphere->GetRigidbody()->GetVelocity());
+		Sphere->GetRigidbody()->SetRotationalVel(rotVel);
+		//std::cout << rotVel.x << " " << rotVel.y << " " << rotVel.z << std::endl;
+
+
 		return true;
 	}
 	return false;
@@ -283,8 +321,9 @@ glm::vec3 KinematicController::nearestPoint(glm::vec3 posOnPlane, Object* AABB)
 	return glm::vec3(x, y, z);
 }
 
-void KinematicController::Update(std::vector<Object*>& objs)
+void KinematicController::Update(std::vector<Object*>& objs, float deltaTime)
 {
 	//std::cout << "Updating Collision Detection";
+	DeltaTime = deltaTime;
 	CheckGeneralCollisions(objs);
 }

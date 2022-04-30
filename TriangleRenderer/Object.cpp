@@ -406,30 +406,37 @@ void Object::StartScripts()
 //object movement functions
 void Object::translation(glm::vec3 movement)
 {
-	std::cout << "Translating" << std::endl;
-	std::cout << "--------------------" << std::endl;
-	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-	std::cout << movement.x << " " << movement.y << " " << movement.z << std::endl;
+	//std::cout << "Translating" << std::endl;
+	//std::cout << "--------------------" << std::endl;
+	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	//std::cout << movement.x << " " << movement.y << " " << movement.z << std::endl;
 	position += movement;
-	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-	std::cout << "***************" << std::endl;
+	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	//std::cout << "***************" << std::endl;
 }
 
 void Object::rotate(glm::vec3 _rotation)
 {
+	//std::cout << "Rotating" << std::endl;
+	//std::cout << "--------------------" << std::endl;
+	//std::cout << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
+	//std::cout << _rotation.x << " " << _rotation.y << " " << _rotation.z << std::endl;
 	rotation += _rotation;
+	//std::cout << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
+	//std::cout << "***************" << std::endl;
+	
 }
 
 void Object::SetPosition(glm::vec3 pos)
 {
 	//position = pos;
-	std::cout << "Setting Position" << std::endl;
-	std::cout << "--------------------" << std::endl;
-	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-	std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	//std::cout << "Setting Position" << std::endl;
+	//std::cout << "--------------------" << std::endl;
+	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	//std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	position = pos;
-	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-	std::cout << "***************" << std::endl;
+	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	//std::cout << "***************" << std::endl;
 	UpdateCollider();
 }
 
