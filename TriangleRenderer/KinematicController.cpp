@@ -159,12 +159,13 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 
 
 		glm::vec3 angVel = Sphere->GetRigidbody()->GetRotVel();
-		glm::vec3 linVel = angVel * Sphere->GetSphereRadius();
-		linVel = -glm::vec3(linVel.z, linVel.x, linVel.y);
-		//glm::angle
+		glm::vec3 linVel = -angVel * Sphere->GetSphereRadius();
+
 		float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
-		glm::quat rotat = glm::angleAxis(angle, glm::vec3(0, 0, 1));
+		glm::quat rotat = glm::angleAxis(angle, glm::cross(planes[planeNo]->normal, glm::vec3(0, 1, 0)));
+		linVel = linVel * glm::angleAxis(glm::radians(-90.0f), planes[planeNo]->normal);
 		linVel = rotat * linVel;
+		
 
 		if (abs(linVel.x) < 0.01f) linVel.x = 0;
 		if (abs(linVel.y) < 0.01f) linVel.y = 0;
@@ -172,14 +173,15 @@ bool KinematicController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 
 		glm::vec3 velInDir = velocity - (Mag * -planes[planeNo]->normal);
 
-		Sphere->GetRigidbody()->AddForce(-velInDir * (Sphere->GetRigidbody()->GetFriction()), VelocityChange);
+		
 
-		velInDir += -velInDir * (Sphere->GetRigidbody()->GetFriction());
+		//velInDir += -velInDir * (Sphere->GetRigidbody()->GetFriction());
 
 		glm::vec3 newVel = linVel - velInDir;
 
 		Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.5f), VelocityChange);
-		
+		velInDir = velocity - (Mag * -planes[planeNo]->normal);
+		//Sphere->GetRigidbody()->AddForce(-velInDir * (Sphere->GetRigidbody()->GetFriction()), VelocityChange);
 
 		glm::vec3 force = planes[planeNo]->normal * Mag * 2.0f;
 
