@@ -59,5 +59,5 @@ private:
 	bool gravityAffected = true;
 
 	float elasticity, friction;
-	float mass = 1;
+	float mass = 2.0f;
 };

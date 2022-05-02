@@ -125,7 +125,6 @@ bool ObjectController::checkCollision(Object* obj1, Object* obj2)
 bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 {
 	glm::vec3 ray = glm::normalize(Sphere->GetRigidbody()->GetVelocity());
-	//ray = Sphere->GetRigidbody()->GetVelocity();
 
 	//retrieving the planes of the bounding box and storing them within the function
 	std::vector<Plane*>& planes = AABB->GetPlanes();

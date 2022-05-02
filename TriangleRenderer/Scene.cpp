@@ -54,6 +54,8 @@ void Scene::updateObjects(float DeltaTime)
 	kin->Update(objects, DeltaTime);
 
 	Input* input = Input::getInstance();
+
+	glm::quat camRotation = glm::quat(glm::radians(-camRot));
 	if (input->GetAxis("Start"))
 	{
 		objects[1]->GetRigidbody()->setKinematic(false);
@@ -61,22 +63,22 @@ void Scene::updateObjects(float DeltaTime)
 	}
 	if (input->GetAxis("Forward"))
 	{
-		camPos += glm::vec3(0.0f, 0.0f, -0.5f);
+		camPos += (glm::vec3(0.0f, 0.0f, -0.5f) * camRotation);
 	}
 
 	if (input->GetAxis("Back"))
 	{
-		camPos += glm::vec3(0.0f, 0.0f, 0.5f);
+		camPos += (glm::vec3(0.0f, 0.0f, 0.5f) * camRotation);
 	}
 
 	if (input->GetAxis("Left"))
 	{
-		camPos += glm::vec3(-0.5f, 0.0f, 0.0f);
+		camPos += (glm::vec3(-0.5f, 0.0f, 0.0f) * camRotation);
 	}
 
 	if (input->GetAxis("Right"))
 	{
-		camPos += glm::vec3(0.5f, 0.0f, 0.0f);
+		camPos += (glm::vec3(0.5f, 0.0f, 0.0f) * camRotation);
 	}
 
 	if (input->GetAxis("Up"))

@@ -22,11 +22,13 @@ void DynamicObject::Update(float DeltaTime)
 		{
 			ObjectController* kin = ObjectController::getInstance();
 			glm::vec3 gravity = kin->GetGravity();
-			AddForce(gravity * DeltaTime, VelocityChange);
+			AddForce(gravity * mass, Impulse);
 		}
 		
 		std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 		std::cout << "DeltaTime: " << DeltaTime << std::endl;
+
+		//Drag(DeltaTime);
 
 		//checking which update type to use
 		switch (UpdateType)
@@ -94,7 +96,7 @@ void DynamicObject::Drag(float deltaTime)
 	glm::vec3 drag = C * ((airDensity * velocity * velocity) / 2.0f) * frontalArea;
 
 	//adding the drag force to the object
-	AddForce(drag, Impulse);
+	AddForce(-drag * deltaTime, Impulse);
 }
 
 void DynamicObject::Euler(float DeltaTime)
@@ -154,7 +156,7 @@ void DynamicObject::Vertlet(float deltaTime)
 	glm::vec3 previousPosition;
 
 	_force = force;
-	acceleration = force / mass;
+	acceleration = _force / mass;
 
 	previousPosition = attachedObj->GetPosition() - velocity * deltaTime + 0.5f * acceleration * (deltaTime * deltaTime);
 	attachedObj->SetPosition(-previousPosition + 2.0f * attachedObj->GetPosition() + acceleration * deltaTime * deltaTime);
