@@ -58,15 +58,17 @@ Shader::Shader(const std::string& _vertPath, const std::string& _fragPath)
 
 	//create the overall shader program
 	m_progId = glCreateProgram();
+	//attaching the vertex and fragment shaders
 	glAttachShader(m_progId, vertexShaderId);
 	glAttachShader(m_progId, fragmentShaderId);
 
+	//binding the relavent attributes
 	glBindAttribLocation(m_progId, 0, "a_Position");
 	glBindAttribLocation(m_progId, 1, "a_TexCoord");
 	glBindAttribLocation(m_progId, 2, "a_Normal");
 
 
-	
+	//linking the final program
 	glLinkProgram(m_progId);
 	success = 0;
 	glGetProgramiv(m_progId, GL_LINK_STATUS, &success);
@@ -87,11 +89,13 @@ Shader::Shader(const std::string& _vertPath, const std::string& _fragPath)
 
 void Shader::use()
 {
+	//binding the program
 	glUseProgram(m_progId);
 }
 
 void Shader::unUse()
 {
+	//unbinding the program
 	glUseProgram(0);
 }
 

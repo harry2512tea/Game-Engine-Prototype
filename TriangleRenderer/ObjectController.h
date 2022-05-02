@@ -9,20 +9,30 @@
 class ObjectController
 {
 public:
-	void Update(std::vector<Object*>& objs, float deltaTime);
+	
 	static ObjectController* getInstance();
-	void CheckGeneralCollisions(std::vector<Object*>& objs);
-	void CheckPreciseCollision(Object* obj1, Object* obj2);
-	glm::vec3 GetGravity() { return Gravity; };
-	glm::vec3 SetGravity(glm::vec3 grav) { Gravity = grav; };
 
+	void Update(std::vector<Object*>& objs, float deltaTime);
+
+	void CheckGeneralCollisions(std::vector<Object*>& objs);
+	void CheckCollisionResponse(Object* obj1, Object* obj2);
+
+	glm::vec3 GetGravity() { return Gravity; };
+	void SetGravity(glm::vec3 grav) { Gravity = grav; };
+
+	float GetDensity() { return airDensity; };
+	void SetDensity(float value) { airDensity = value; };
 private:
-	glm::vec3 InvertNormal(glm::vec3 normal);
+	static ObjectController* instance;
+
 	glm::vec3 Gravity = glm::vec3(0.0f, -9.81f, 0.0f);
-	bool checkCollision(Object* obj1, Object* obj2);
 	float DeltaTime;
+	float airDensity;
+
+	bool checkCollision(Object* obj1, Object* obj2);
+
 	bool SpherePlaneCollision(Object* Sphere, Object* Plane);
 	bool SphereSphereCollision(Object* obj1, Object* obj2);
-	glm::vec3 nearestPoint(glm::vec3 posOnPlane, Object* AABB);
-	static ObjectController* instance;
+
+	
 };

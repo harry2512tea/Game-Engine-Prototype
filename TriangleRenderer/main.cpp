@@ -5,6 +5,8 @@
 #include <glm/ext.hpp>
 #include <stdexcept>
 #include <list>
+#include <iostream>
+#include <fstream> 
 
 //#include <wavefront/wavefront.h>
 
@@ -54,7 +56,7 @@ int main()
 
 	glm::vec3 LightPos(-10.0f, 10.0f, 10.0f);
 
-	Scene mainScene = Scene(LightPos, window);
+	Scene mainScene = Scene(window, "SceneData/MainScene.txt");
 
 	
 

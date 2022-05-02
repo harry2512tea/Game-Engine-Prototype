@@ -8,7 +8,6 @@
 class Input
 {
 public:
-	Input();
 	static Input* getInstance();
 	bool GetAxis(const std::string& axis);
 	void SetAxis(const std::string& axis, SDL_Scancode key);
