@@ -24,6 +24,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	objectModel.textureId = GenTexture(_texturePath);
 
@@ -48,6 +49,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	objectModel.textureId = GenTexture(_texturePath);
 
@@ -72,6 +74,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	objectModel.textureId = GenTexture(_texturePath);
 
@@ -96,6 +99,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	objectModel.textureId = GenTexture(_texturePath);
 
@@ -121,6 +125,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
@@ -145,6 +150,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
@@ -168,6 +174,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos) : Rigi
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
@@ -191,6 +198,7 @@ Object::Object(const std::string& _modelPath, Shader shad) : Rigidbody(this)
 
 	GetVertices(_modelPath);
 	calculateAABB();
+	calculateOBB();
 
 	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
@@ -330,22 +338,111 @@ void Object::calculateAABB()
 	UpdateCollider();
 
 	//using the extreme value of the bounding box as the radius for a sphere collider
-	colliderRadius = fmaxf(fmaxf(max_y, max_z), fmax(max_z, max_y));
+	colliderRadius = fmaxf(fmaxf(max_y * scale.y, max_z * scale.z), fmax(max_x * scale.x, max_y * scale.y));
 
 	//setting up the plane objects for the box collider
 	// 
 	//0
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, max_y, min_z), position, scale, rotation));
+	Planes.push_back(new AABBPlane(glm::vec3(max_x, max_y, max_z), glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, max_y, min_z), position, scale, rotation));
 	//1
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position, scale, rotation));
+	Planes.push_back(new AABBPlane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position, scale, rotation));
 	//2
-	Planes.push_back(new Plane(glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, min_y, max_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
+	Planes.push_back(new AABBPlane(glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, min_y, max_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
 	//3
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
+	Planes.push_back(new AABBPlane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
 	//4
-	Planes.push_back(new Plane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, min_z), position, scale, rotation));
+	Planes.push_back(new AABBPlane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, min_z), position, scale, rotation));
 	//5
-	Planes.push_back(new Plane(glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, min_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
+	Planes.push_back(new AABBPlane(glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, min_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotation));
+}
+
+void Object::calculateOBB()
+{
+	OBBinitialMin = initialMin;
+	OBBinitialMax = initialMax;
+	float min_x, max_x,
+		min_y, max_y,
+		min_z, max_z;
+
+	min_x = OBBinitialMin.x;
+	min_y = OBBinitialMin.y;
+	min_z = OBBinitialMin.z;
+	max_x = OBBinitialMax.x;
+	max_y = OBBinitialMax.y;
+	max_z = OBBinitialMax.z;
+
+	rotationQuat = glm::quat(glm::radians(rotation));
+	//0
+	OBBPlanes.push_back(new OBBPlane(glm::vec3(max_x, max_y, max_z), glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, max_y, min_z), position, scale, rotationQuat));
+	//1
+	OBBPlanes.push_back(new OBBPlane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, min_y, max_z), glm::vec3(min_x, min_y, max_z), position, scale, rotationQuat));
+	//2
+	OBBPlanes.push_back(new OBBPlane(glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, min_y, max_z), glm::vec3(min_x, min_y, min_z), position, scale, rotationQuat));
+	//3
+	OBBPlanes.push_back(new OBBPlane(glm::vec3(max_x, max_y, min_z), glm::vec3(min_x, max_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotationQuat));
+	//4
+	OBBPlanes.push_back(new OBBPlane(glm::vec3(max_x, max_y, max_z), glm::vec3(max_x, max_y, min_z), glm::vec3(max_x, min_y, min_z), position, scale, rotationQuat));
+	//5
+	OBBPlanes.push_back(new OBBPlane(glm::vec3(max_x, min_y, max_z), glm::vec3(max_x, min_y, min_z), glm::vec3(min_x, min_y, min_z), position, scale, rotationQuat));
+	std::cout;
+}
+
+void Object::UpdateCollider()
+{
+	//0 = OBB
+	//1 = Sphere
+	rotationQuat = glm::quat(glm::radians(rotation));
+
+	//min = (initialMin * scale) + position;
+	//max = (initialMax * scale) + position;
+
+	if (previousPos != position ||
+		previousRot != rotation)
+	{
+		glm::vec3 vertex = vertices[0] * scale * rotationQuat;
+
+		GLfloat
+			min_x, max_x,
+			min_y, max_y,
+			min_z, max_z;
+		//setting the initial min and max values to the first vertex
+		min_x = max_x = vertex.x;
+		min_y = max_y = vertex.y;
+		min_z = max_z = vertex.z;
+
+		for (int i = 0; i < vertices.size(); i++)
+		{
+			vertex = (vertices[i] * scale)* rotationQuat;
+			//checking each vertex against the max and min
+			//if it exceeds either end, it becomes the new max/min
+			if (vertex.x < min_x) min_x = vertex.x;
+			if (vertex.x > max_x) max_x = vertex.x;
+			if (vertex.y < min_y) min_y = vertex.y;
+			if (vertex.y > max_y) max_y = vertex.y;
+			if (vertex.z < min_z) min_z = vertex.z;
+			if (vertex.z > max_z) max_z = vertex.z;
+		}
+		min = glm::vec3(min_x, min_y, min_z) + position;
+		max = glm::vec3(max_x, max_y, max_z) + position;
+	}
+
+	switch (colliderType)
+	{
+	case 0:
+		
+		for (int i = 0; i < OBBPlanes.size(); i++)
+		{
+			OBBPlanes[i]->UpdatePoints(position, scale, rotationQuat);
+		}
+		break;
+	case 1:
+		colliderRadius = fmaxf(fmaxf(initialMax.y * scale.y, initialMax.z * scale.z), fmax(initialMax.x * scale.x, initialMax.y * scale.y));
+		break;
+	}
+
+	previousPos = position;
+	previousRot = rotation;
+	previousScale = scale;
 }
 
 void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam)
@@ -359,14 +456,16 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)width / (float)height, 0.1f, 100.0f);
 
 	//initialising the model matrix
-	glm::mat4 model(1.0f);
+	model = glm::mat4(1.0f);
 
 	//model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
 	// 
 	//performing transformations on the model matrix
+	
 	model = glm::translate(model, position);
-	model = setModelRotation(model);
 	model = glm::scale(model, scale);
+	model = setModelRotation(model);
+	
 
 	//setting the light position in the shader
 	glUniform3f(lightLoc, lightPos.x, lightPos.y, lightPos.z);
@@ -426,9 +525,9 @@ void Object::UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int addr
 glm::mat4 Object::setModelRotation(glm::mat4 _model)
 {
 	//generating a rotation matrix and multiplying the transform matrix by it
-	_model = glm::rotate(_model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	_model = glm::rotate(_model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-	_model = glm::rotate(_model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	_model = glm::rotate(_model, glm::radians(-rotation.x), glm::vec3(1, 0, 0));
+	_model = glm::rotate(_model, glm::radians(-rotation.y), glm::vec3(0, 1, 0));
+	_model = glm::rotate(_model, glm::radians(-rotation.z), glm::vec3(0, 0, 1));
 
 	//returning the resulting model/transform matrix
 	return _model;

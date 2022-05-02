@@ -41,12 +41,12 @@ public:
 	void SetRotation(glm::vec3 rot);
 	void SetColliderType(int col) { colliderType = col; };
 
-	// 0 = AABB
+	// 0 = OBB
 	// 1 = Sphere Collider
 	int GetColliderType() { return colliderType; };
 	float GetSphereRadius();
 	DynamicObject* GetRigidbody() { return &Rigidbody; };
-	std::vector<Plane*>& GetPlanes() { return Planes; };
+	std::vector<OBBPlane*>& GetPlanes() { return OBBPlanes; };
 	glm::vec3 GetPosition();
 	glm::vec3 GetRotation();
 
@@ -59,9 +59,13 @@ private:
 	int width, height;
 	WfModel objectModel = { 0 };
 	DynamicObject Rigidbody;
+	glm::mat4 model;
 	std::vector<glm::vec3> vertices;
 	std::vector<ObjectScript*> scripts;
 	glm::vec3 scale = glm::vec3(0.0f);
+	glm::vec3 previousPos;
+	glm::vec3 previousRot;
+	glm::vec3 previousScale;
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f);
 	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc;
@@ -70,18 +74,22 @@ private:
 	GLuint GenTexture(const std::string& _texturePath);
 	void GetVertices(const std::string& _modelPath);
 	void calculateAABB();
-	void UpdateCollider() {
-		//min = ((initialMin * rotationQuat) * scale) + position;
-		//max = ((initialMax * rotationQuat) * scale) + position;
+	void calculateOBB();
+	void UpdateCollider();
 
-		min = (initialMin * scale) + position;
-		max = (initialMax * scale) + position;
-	};
-
-	//bounding boxes
-	glm::vec3 initialMin, initialMax = glm::vec3(0.0f);
-	float colliderRadius;
+	//Colliders
 	int colliderType = 0;
 	bool isTrigger;
-	std::vector<Plane*> Planes;
+
+	//Sphere collider
+	float colliderRadius;
+
+	//Axis Aligned Bounding Box
+	glm::vec3 initialMin, initialMax = glm::vec3(0.0f);
+	std::vector<AABBPlane*> Planes;
+
+	//Oriented Bounding Box
+	glm::vec3 OBBinitialMin, OBBinitialMax = glm::vec3(0.0f);
+	glm::quat rotationQuat;
+	std::vector<OBBPlane*> OBBPlanes;
 };

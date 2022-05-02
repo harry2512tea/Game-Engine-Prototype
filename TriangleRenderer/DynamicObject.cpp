@@ -25,8 +25,8 @@ void DynamicObject::Update(float DeltaTime)
 			AddForce(gravity * DeltaTime, VelocityChange);
 		}
 		
-		std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
-		std::cout << "DeltaTime: " << DeltaTime << std::endl;
+		//std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
+		//std::cout << "DeltaTime: " << DeltaTime << std::endl;
 
 		Drag(DeltaTime);
 
@@ -49,7 +49,7 @@ void DynamicObject::Update(float DeltaTime)
 
 		
 		//updating the object's rotation by the rotational momentum
-		attachedObj->rotate(glm::degrees(rotationalVel) * DeltaTime);
+		attachedObj->rotate(-glm::degrees(rotationalVel) * DeltaTime);
 		//std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 
 		//updating the objects momentum
@@ -75,7 +75,6 @@ void DynamicObject::AddForce(glm::vec3 Force, ForceMode Mode)
 		break;
 	}
 }
-
 
 void DynamicObject::Drag(float deltaTime)
 {

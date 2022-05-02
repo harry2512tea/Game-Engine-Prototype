@@ -32,7 +32,7 @@ void ObjectController::CheckGeneralCollisions(std::vector<Object*>& objs)
 				//checking if the two objects are colliding
 				if (checkCollision(objs[i], objs[O]))
 				{
-					//std::cout << "Collision " << i << " " << O << std::endl;
+					std::cout << "Collision " << i << " " << O << std::endl;
 					//running collision response
 					CheckCollisionResponse(objs[i], objs[O]);
 				}
@@ -43,7 +43,7 @@ void ObjectController::CheckGeneralCollisions(std::vector<Object*>& objs)
 
 bool ObjectController::checkCollision(Object* obj1, Object* obj2)
 {
-	// 0 = AABB
+	// 0 = OBB
 	// 1 = Sphere
 	float x, y, z, dist;
 	glm::vec3 sphere;
@@ -122,12 +122,12 @@ bool ObjectController::checkCollision(Object* obj1, Object* obj2)
 	return false;
 }
 
-bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* AABB)
+bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 {
 	glm::vec3 ray = glm::normalize(Sphere->GetRigidbody()->GetVelocity());
 
 	//retrieving the planes of the bounding box and storing them within the function
-	std::vector<Plane*>& planes = AABB->GetPlanes();
+	std::vector<OBBPlane*>& planes = OBB->GetPlanes();
 
 	//settting up the variables used for calculations
 	glm::vec3 IntersectPoint;
@@ -180,74 +180,84 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* AABB)
 	//checks if there was a collision
 	if (planeNo > -1)
 	{
-		
 		glm::vec3 velocity = Sphere->GetRigidbody()->GetVelocity();
 
-		//updates the collision point to the shortest distance between the sphere and plane using the plane's normal
-		planes[planeNo]->CheckIntersection(-planes[planeNo]->normal, Sphere->GetPosition(), IntersectPoint);
+		float Mag = glm::dot(velocity, planes[planeNo]->normal);;
+		if (Mag < 0)
+		{
 
-		//calculates the position the sphere should be when colliding by multiplying 
-		//the normal of the plane by the radius of the sphere, and adding that to the collision point
-		desiredPos = IntersectPoint + (planes[planeNo]->normal * Sphere->GetSphereRadius() * 1.0f);
+			//updates the collision point to the shortest distance between the sphere and plane using the plane's normal
+			bool collide = planes[planeNo]->getIntersection(-planes[planeNo]->normal, Sphere->GetPosition(), IntersectPoint, Sphere->GetSphereRadius());
+			float Dist = (IntersectPoint.x - Sphere->GetPosition().x) * (IntersectPoint.x - Sphere->GetPosition().x) +
+				(IntersectPoint.y - Sphere->GetPosition().y) * (IntersectPoint.y - Sphere->GetPosition().y) +
+				(IntersectPoint.z - Sphere->GetPosition().z) * (IntersectPoint.z - Sphere->GetPosition().z);
+			if (Dist < Sphere->GetSphereRadius() * Sphere->GetSphereRadius() && collide)
+			{
 
-		//calculating the magnitude of the velocity in the direction of the plane
-		float Mag = glm::dot(velocity, -planes[planeNo]->normal);
+				//calculates the position the sphere should be when colliding by multiplying 
+				//the normal of the plane by the radius of the sphere, and adding that to the collision point
+				desiredPos = IntersectPoint + (planes[planeNo]->normal * Sphere->GetSphereRadius() * 1.0f);
 
-		//retirving the angular velocity of the ball
-		glm::vec3 angVel = Sphere->GetRigidbody()->GetRotVel();
+				//calculating the magnitude of the velocity in the direction of the plane
+				Mag = glm::dot(velocity, -planes[planeNo]->normal);
 
-		//converting the angular velocity to linear velocity at the edge of the sphere
-		glm::vec3 linVel = -angVel * Sphere->GetSphereRadius();
+				//retirving the angular velocity of the ball
+				glm::vec3 angVel = Sphere->GetRigidbody()->GetRotVel();
 
-		//calculating the angle between the origin, and the plane's normal
-		float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
+				//converting the angular velocity to linear velocity at the edge of the sphere
+				glm::vec3 linVel = -angVel * Sphere->GetSphereRadius();
 
-		//creates a quaternion to rotate the linear velocity to the point of collision
-		glm::quat rotat = glm::angleAxis(angle, glm::cross(planes[planeNo]->normal, glm::vec3(0, 1, 0)));
+				//calculating the angle between the origin, and the plane's normal
+				float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
 
-		//rotates the linear velocity vector to the correct orientation of the collision point.
-		linVel = linVel * glm::angleAxis(glm::radians(-90.0f), planes[planeNo]->normal);
-		linVel = rotat * linVel;
-		
-		//removing any negligable amounts that could impact calculations
-		if (abs(linVel.x) < 0.0001f) linVel.x = 0;
-		if (abs(linVel.y) < 0.0001f) linVel.y = 0;
-		if (abs(linVel.z) < 0.0001f) linVel.z = 0;
+				//creates a quaternion to rotate the linear velocity to the point of collision
+				glm::quat rotat = glm::angleAxis(angle, glm::cross(planes[planeNo]->normal, glm::vec3(0, 1, 0)));
 
-		//calculating the velocity component not in the direction of the plane
-		glm::vec3 velInDir = velocity - (Mag * -planes[planeNo]->normal);
+				//rotates the linear velocity vector to the correct orientation of the collision point.
+				linVel = linVel * glm::angleAxis(glm::radians(-90.0f), planes[planeNo]->normal);
+				linVel = rotat * linVel;
 
-		//calculating the change in velocity due to angular momentum.
-		glm::vec3 newVel = linVel - velInDir;
+				//removing any negligable amounts that could impact calculations
+				if (abs(linVel.x) < 0.0001f) linVel.x = 0;
+				if (abs(linVel.y) < 0.0001f) linVel.y = 0;
+				if (abs(linVel.z) < 0.0001f) linVel.z = 0;
 
-		//applying that change in velocity
-		Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.3f), VelocityChange);
+				//calculating the velocity component not in the direction of the plane
+				glm::vec3 velInDir = velocity - (Mag * -planes[planeNo]->normal);
 
-		//calculating the velocity change of an elastic collision between the sphere and the plane
-		glm::vec3 force = planes[planeNo]->normal * Mag * 2.0f;
+				//calculating the change in velocity due to angular momentum.
+				glm::vec3 newVel = linVel - velInDir;
 
-		//applies the velocity change of an inelastic collision between the sphere and the plane, using the elastic collision value
-		Sphere->GetRigidbody()->AddForce(force * Sphere->GetRigidbody()->GetElasticity(), VelocityChange);
+				//applying that change in velocity
+				Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.3f), VelocityChange);
 
-		//setting the sphere's position to the actual collision position
-		Sphere->SetPosition(desiredPos);
+				//calculating the velocity change of an elastic collision between the sphere and the plane
+				glm::vec3 force = planes[planeNo]->normal * Mag * 2.0f;
 
-		//*******************************************************friction calculations***************************************************
+				//applies the velocity change of an inelastic collision between the sphere and the plane, using the elastic collision value
+				Sphere->GetRigidbody()->AddForce(force * Sphere->GetRigidbody()->GetElasticity(), VelocityChange);
 
-		//retrieving the new velocity
-		velocity = Sphere->GetRigidbody()->GetVelocity();
+				//setting the sphere's position to the actual collision position
+				Sphere->SetPosition(desiredPos);
 
-		//taking friction into account with collisions
-		Sphere->GetRigidbody()->AddForce(velocity * (1 - Sphere->GetRigidbody()->GetFriction()) - velocity, VelocityChange);
+				//*******************************************************friction calculations***************************************************
 
-		//recalculating the new rotational velocity of the sphere
-		glm::vec3 rotVel = glm::cross(planes[planeNo]->normal * Sphere->GetSphereRadius(), Sphere->GetRigidbody()->GetVelocity());
+				//retrieving the new velocity
+				velocity = Sphere->GetRigidbody()->GetVelocity();
 
-		//applying the new rotational velocity
-		Sphere->GetRigidbody()->SetRotationalVel(rotVel);
+				//taking friction into account with collisions
+				Sphere->GetRigidbody()->AddForce(velocity * (1 - Sphere->GetRigidbody()->GetFriction()) - velocity, VelocityChange);
+
+				//recalculating the new rotational velocity of the sphere
+				glm::vec3 rotVel = glm::cross(planes[planeNo]->normal * Sphere->GetSphereRadius(), Sphere->GetRigidbody()->GetVelocity());
+
+				//applying the new rotational velocity
+				Sphere->GetRigidbody()->SetRotationalVel(rotVel);
 
 
-		return true;
+				return true;
+			}
+		}
 	}
 	return false;
 }
@@ -317,6 +327,8 @@ void ObjectController::CheckCollisionResponse(Object* obj1, Object* obj2)
 	//series of if statements and switches to determine which collision detection algorithm to use
 
 	//determins whether the objects are dynamic or not, and which collision algorithms to use.
+	// 0 = OBB
+	// 1 = Sphere
 	if (!obj1->GetRigidbody()->getKinematic() && !obj2->GetRigidbody()->getKinematic())
 	{
 		switch (obj1->GetColliderType())

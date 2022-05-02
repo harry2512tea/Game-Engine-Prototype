@@ -114,7 +114,7 @@ int main()
 			deltaTime = 0.1f;
 		}
 
-		mainScene.updateObjects(deltaTime);
+		mainScene.updateObjects(0.01f);
 
 	}
 
