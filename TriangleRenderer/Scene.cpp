@@ -59,7 +59,7 @@ void Scene::updateObjects(float DeltaTime)
 	if (input->GetAxis("Start"))
 	{
 		objects[1]->GetRigidbody()->setKinematic(false);
-		//objects[4]->GetRigidbody()->setKinematic(false);
+		//objects[2]->GetRigidbody()->setKinematic(false);
 	}
 	if (input->GetAxis("Forward"))
 	{

@@ -22,13 +22,13 @@ void DynamicObject::Update(float DeltaTime)
 		{
 			ObjectController* kin = ObjectController::getInstance();
 			glm::vec3 gravity = kin->GetGravity();
-			AddForce(gravity * mass, Impulse);
+			AddForce(gravity * DeltaTime, VelocityChange);
 		}
 		
 		std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 		std::cout << "DeltaTime: " << DeltaTime << std::endl;
 
-		//Drag(DeltaTime);
+		Drag(DeltaTime);
 
 		//checking which update type to use
 		switch (UpdateType)
@@ -50,7 +50,7 @@ void DynamicObject::Update(float DeltaTime)
 		
 		//updating the object's rotation by the rotational momentum
 		attachedObj->rotate(glm::degrees(rotationalVel) * DeltaTime);
-		std::cout << rotationalVel.x << " " << rotationalVel.y << " " << rotationalVel.z << std::endl;
+		//std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 
 		//updating the objects momentum
 		momentum = CalculateMomentum();
@@ -94,9 +94,11 @@ void DynamicObject::Drag(float deltaTime)
 
 	//drag equation: https://www.grc.nasa.gov/www/k-12/airplane/drageq.html#:~:text=The%20drag%20equation%20states%20that,times%20the%20reference%20area%20A.&text=For%20given%20air%20conditions%2C%20shape,for%20Cd%20to%20determine%20drag.
 	glm::vec3 drag = C * ((airDensity * velocity * velocity) / 2.0f) * frontalArea;
+	 
+	drag *= -glm::normalize(velocity);
 
 	//adding the drag force to the object
-	AddForce(-drag * deltaTime, Impulse);
+	AddForce(drag, Impulse);
 }
 
 void DynamicObject::Euler(float DeltaTime)

@@ -49,7 +49,7 @@ private:
 	
 	void Drag(float deltaTime);
 
-	int UpdateType = 0;
+	int UpdateType = 1;
 	void Euler(float deltaTime);
 	void RungeKutta2(float deltaTime);
 	void RungeKutta4(float deltaTime);
@@ -59,5 +59,5 @@ private:
 	bool gravityAffected = true;
 
 	float elasticity, friction;
-	float mass = 2.0f;
+	float mass = 1.0f;
 };
