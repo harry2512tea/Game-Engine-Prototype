@@ -28,7 +28,7 @@ void DynamicObject::Update(float DeltaTime)
 		//std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 		//std::cout << "DeltaTime: " << DeltaTime << std::endl;
 
-		Drag(DeltaTime);
+		//Drag(DeltaTime);
 
 		//checking which update type to use
 		switch (UpdateType)

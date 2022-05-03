@@ -32,7 +32,7 @@ void ObjectController::CheckGeneralCollisions(std::vector<Object*>& objs)
 				//checking if the two objects are colliding
 				if (checkCollision(objs[i], objs[O]))
 				{
-					std::cout << "Collision " << i << " " << O << std::endl;
+					//std::cout << "Collision " << i << " " << O << std::endl;
 					//running collision response
 					CheckCollisionResponse(objs[i], objs[O]);
 				}
@@ -141,33 +141,48 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 	for (int i = 0; i < planes.size(); i++)
 	{
 		//uses the plane class' built in intersection function to test for a collision
-		if (planes[i]->CheckIntersection(ray, Sphere->GetPosition(), TempIntersectPoint))
+		if (planes[i]->CheckIntersection(-planes[i]->normal, Sphere->GetPosition(), TempIntersectPoint))
 		{
 			//sets the values for the first possible intersection
 			if (!intersected)
 			{
-				intersected = true;
-				IntersectPoint = TempIntersectPoint;
-				planeNo = i;
-				pointDist = (TempIntersectPoint.x - Sphere->GetPosition().x) * (TempIntersectPoint.x - Sphere->GetPosition().x) +
-					(TempIntersectPoint.y - Sphere->GetPosition().y) * (TempIntersectPoint.y - Sphere->GetPosition().y) +
-					(TempIntersectPoint.z - Sphere->GetPosition().z) * (TempIntersectPoint.z - Sphere->GetPosition().z);
+				glm::vec3 direction = glm::normalize(TempIntersectPoint - Sphere->GetPosition());
+				direction = glm::vec3(round(direction.x * 10000) / 10000, round(direction.y * 10000) / 10000, round(direction.z * 10000) / 10000);
+				glm::vec3 tempNorm = planes[i]->normal;
+				tempNorm = glm::vec3(round(tempNorm.x * 10000) / 10000, round(tempNorm.y * 10000) / 10000, round(tempNorm.z * 10000) / 10000);
+				if (direction != tempNorm)
+				{
+					intersected = true;
+					IntersectPoint = TempIntersectPoint;
+					planeNo = i;
+					pointDist = (TempIntersectPoint.x - Sphere->GetPosition().x) * (TempIntersectPoint.x - Sphere->GetPosition().x) +
+						(TempIntersectPoint.y - Sphere->GetPosition().y) * (TempIntersectPoint.y - Sphere->GetPosition().y) +
+						(TempIntersectPoint.z - Sphere->GetPosition().z) * (TempIntersectPoint.z - Sphere->GetPosition().z);
+				}
 			}
 			//runs through the rest of the planes to check if there is a closer collision point
 			else
 			{
-				//calculates the distance between the collision point and the sphere
-				float newPointDist = (TempIntersectPoint.x - Sphere->GetPosition().x) * (TempIntersectPoint.x - Sphere->GetPosition().x) +
-					(TempIntersectPoint.y - Sphere->GetPosition().y) * (TempIntersectPoint.y - Sphere->GetPosition().y) +
-					(TempIntersectPoint.z - Sphere->GetPosition().z) * (TempIntersectPoint.z - Sphere->GetPosition().z);
+				glm::vec3 direction = glm::normalize(TempIntersectPoint - Sphere->GetPosition());
+				direction = glm::vec3(round(direction.x * 10000) / 10000, round(direction.y * 10000) / 10000, round(direction.z * 10000) / 10000);
+				glm::vec3 tempNorm = planes[i]->normal;
+				tempNorm = glm::vec3(round(tempNorm.x * 10000) / 10000, round(tempNorm.y * 10000) / 10000, round(tempNorm.z * 10000) / 10000);
 
-				//sets a new collision point if the new distance
-				//is less than the distance from the original collision point
-				if (newPointDist < pointDist)
+				if (direction != tempNorm)
 				{
-					IntersectPoint = TempIntersectPoint;
-					planeNo = i;
-					pointDist = newPointDist;
+					//calculates the distance between the collision point and the sphere
+					float newPointDist = (TempIntersectPoint.x - Sphere->GetPosition().x) * (TempIntersectPoint.x - Sphere->GetPosition().x) +
+						(TempIntersectPoint.y - Sphere->GetPosition().y) * (TempIntersectPoint.y - Sphere->GetPosition().y) +
+						(TempIntersectPoint.z - Sphere->GetPosition().z) * (TempIntersectPoint.z - Sphere->GetPosition().z);
+
+					//sets a new collision point if the new distance
+					//is less than the distance from the original collision point
+					if (newPointDist < pointDist)
+					{
+						IntersectPoint = TempIntersectPoint;
+						planeNo = i;
+						pointDist = newPointDist;
+					}
 				}
 			}
 		}
@@ -180,20 +195,27 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 	//checks if there was a collision
 	if (planeNo > -1)
 	{
+		std::cout << planeNo << std::endl;
 		glm::vec3 velocity = Sphere->GetRigidbody()->GetVelocity();
-
-		float Mag = glm::dot(velocity, planes[planeNo]->normal);;
-		if (Mag < 0)
+		if (planeNo != 0)
 		{
 
-			//updates the collision point to the shortest distance between the sphere and plane using the plane's normal
-			bool collide = planes[planeNo]->getIntersection(-planes[planeNo]->normal, Sphere->GetPosition(), IntersectPoint, Sphere->GetSphereRadius());
-			float Dist = (IntersectPoint.x - Sphere->GetPosition().x) * (IntersectPoint.x - Sphere->GetPosition().x) +
-				(IntersectPoint.y - Sphere->GetPosition().y) * (IntersectPoint.y - Sphere->GetPosition().y) +
-				(IntersectPoint.z - Sphere->GetPosition().z) * (IntersectPoint.z - Sphere->GetPosition().z);
-			if (Dist < Sphere->GetSphereRadius() * Sphere->GetSphereRadius() && collide)
-			{
+			std::cout << "stop pls" << std::endl;
+		}
 
+
+		
+
+		//updates the collision point to the shortest distance between the sphere and plane using the plane's normal
+		bool collide = planes[planeNo]->getIntersection(-planes[planeNo]->normal, Sphere->GetPosition(), IntersectPoint, Sphere->GetSphereRadius());
+		float Dist = (IntersectPoint.x - Sphere->GetPosition().x) * (IntersectPoint.x - Sphere->GetPosition().x) +
+			(IntersectPoint.y - Sphere->GetPosition().y) * (IntersectPoint.y - Sphere->GetPosition().y) +
+			(IntersectPoint.z - Sphere->GetPosition().z) * (IntersectPoint.z - Sphere->GetPosition().z);
+		if (Dist < Sphere->GetSphereRadius() * Sphere->GetSphereRadius())
+		{
+			float Mag = glm::dot(velocity, planes[planeNo]->normal);
+			if (Mag < 0 && collide)
+			{
 				//calculates the position the sphere should be when colliding by multiplying 
 				//the normal of the plane by the radius of the sphere, and adding that to the collision point
 				desiredPos = IntersectPoint + (planes[planeNo]->normal * Sphere->GetSphereRadius() * 1.0f);
@@ -258,6 +280,7 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				return true;
 			}
 		}
+		
 	}
 	return false;
 }

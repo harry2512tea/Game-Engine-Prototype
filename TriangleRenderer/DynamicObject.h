@@ -56,7 +56,7 @@ private:
 	void Vertlet(float deltaTime);
 
 	bool isKinematic = true;
-	bool gravityAffected = true;
+	bool gravityAffected = false;
 
 	float elasticity, friction;
 	float mass = 1.0f;
