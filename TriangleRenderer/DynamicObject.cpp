@@ -31,8 +31,11 @@ DynamicObject::DynamicObject(Object* obj) : attachedObj(obj)
 	case 1:
 		momentOfInertia = (2 / 5) * mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius();
 		InertiaTensorBody = glm::mat3(momentOfInertia);
+		//angular_momentum = ((2 / 5) * mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius()) * rotationalVel;
 		break;
 	}
+
+
 }
 
 void DynamicObject::Update(float DeltaTime)
@@ -70,7 +73,7 @@ void DynamicObject::Update(float DeltaTime)
 			break;
 		}
 
-		angular_momentum = ((2 / 5) * mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius()) * rotationalVel;
+		
 		CalculateAngularVelocity();
 		//updating the object's rotation by the rotational momentum
 		attachedObj->rotate(-glm::degrees(angular_velocity) * DeltaTime);

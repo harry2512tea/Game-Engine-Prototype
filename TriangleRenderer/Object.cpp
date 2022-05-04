@@ -32,7 +32,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
 	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
 	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
 	
 }
 
@@ -57,7 +57,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
 	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
 	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
 	
 }
 
@@ -107,7 +107,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
 	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
 	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
 	
 
 }
@@ -131,7 +131,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
 	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
 	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
 	
 }
 
@@ -156,7 +156,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
 	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
 	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
 	
 	
 }
@@ -204,7 +204,7 @@ Object::Object(const std::string& _modelPath, Shader shad) : Rigidbody(this)
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
 	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
 	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-
+	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
 	
 
 }

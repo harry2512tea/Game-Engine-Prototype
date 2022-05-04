@@ -256,7 +256,7 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 
 				Sphere->GetRigidbody()->AddTorque(torque);
 
-
+				Sphere->GetRigidbody()->AddForce(-glm::normalize(momentumInParallel) * frictionForce, Impulse);
 
 
 
