@@ -139,10 +139,10 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, 8.0f, -20.0f), glm::vec3(0.0f), glm::vec3(0.5f)));
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(-40.0f, -7.0f, -20.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 10.0f, 0.5f)));
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(40.0f, -7.0f, -20.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 10.0f, 0.5f)));
-	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(4.0f, 4.0f, -20.0f), glm::vec3(-0.0f, 0.0f, 0.0f), glm::vec3(5.0f)));
+	//objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(4.0f, 4.0f, -20.0f), glm::vec3(-0.0f, 0.0f, 0.0f), glm::vec3(5.0f)));
 
 	//Attaching custom scripts to specified objects
-	objects.back()->AddScript(new movement(objects.back()));
+	//objects.back()->AddScript(new movement(objects.back()));
 }
 
 glm::mat4 Scene::setCamRotation(glm::mat4 _cam)

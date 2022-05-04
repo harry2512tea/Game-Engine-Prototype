@@ -35,7 +35,7 @@ public:
 	void AddForce(glm::vec3 Force, ForceMode Mode);
 	void AddVelocity(glm::vec3 vel) { velocity += vel; };
 	void SetVelocity(glm::vec3 vel) { velocity = vel; };
-	void SetRotationalVel(glm::vec3 rot) { rotationalVel = rot; };
+	void SetRotationalVel(glm::vec3 rot);
 	void setElasticity(float value) { elasticity = value; };
 	void setFriction(float value) { friction = value; };
 	void SetMass(float _mass) { mass = _mass; };
@@ -59,7 +59,7 @@ private:
 	glm::vec3 angular_velocity;
 
 	glm::vec3 CalculateMomentum() { return mass * velocity; };
-	glm::vec3 CalclateAngularVelocity();
+	glm::vec3 CalculateAngularVelocity();
 	
 	void Drag(float deltaTime);
 

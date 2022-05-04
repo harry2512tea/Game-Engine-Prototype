@@ -71,8 +71,9 @@ void DynamicObject::Update(float DeltaTime)
 		}
 
 		angular_momentum = ((2 / 5) * mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius()) * rotationalVel;
+		CalculateAngularVelocity();
 		//updating the object's rotation by the rotational momentum
-		attachedObj->rotate(-glm::degrees(rotationalVel) * DeltaTime);
+		attachedObj->rotate(-glm::degrees(angular_velocity) * DeltaTime);
 		//std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 
 		//updating the objects momentum
@@ -82,9 +83,10 @@ void DynamicObject::Update(float DeltaTime)
 		force = glm::vec3(0.0f);
 	}
 }
-glm::vec3 DynamicObject::CalclateAngularVelocity()
+glm::vec3 DynamicObject::CalculateAngularVelocity()
 {
-
+	angular_velocity = mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius() * angular_momentum;
+	return angular_velocity;
 }
 void DynamicObject::AddTorque(glm::vec3 torque)
 {
@@ -110,7 +112,7 @@ void DynamicObject::AddForce(glm::vec3 Force, ForceMode Mode)
 
 void DynamicObject::Drag(float deltaTime)
 {
-	float pi = 3.1416;
+	float pi = 3.1416f;
 
 	float radius = attachedObj->GetSphereRadius()/10;
 
@@ -196,4 +198,10 @@ void DynamicObject::Vertlet(float deltaTime)
 
 	velocity = attachedObj->GetPosition() - previousPosition / (2.0f * deltaTime);
 	velocity += acceleration * deltaTime;
+}
+
+void DynamicObject::SetRotationalVel(glm::vec3 rot)
+{
+	rotationalVel = rot; 
+	angular_momentum = rot / (mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius());
 }

@@ -312,7 +312,7 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				velocity = Sphere->GetRigidbody()->GetVelocity();
 				glm::vec3 frictionVelocity = velocity * (1 - Sphere->GetRigidbody()->GetFriction() - velocity);
 				//taking friction into account with collisions
-				Sphere->GetRigidbody()->AddForce(frictionVelocity, VelocityChange);
+				//Sphere->GetRigidbody()->AddForce(frictionVelocity, VelocityChange);
 
 				//*******************************************************rotational velocity calculations***************************************************
 
