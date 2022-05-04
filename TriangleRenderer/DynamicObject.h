@@ -22,6 +22,10 @@ public:
 	glm::vec3 GetMomentum() { return momentum; };
 	glm::vec3 GetVelocity() { return velocity; };
 	glm::vec3 GetRotVel() { return rotationalVel; };
+	glm::vec3 GetAngularVelocity() { return angular_velocity; };
+	glm::vec3 Gettorque() { return torque; };
+	glm::vec3 GetAngular_momentum() { return angular_momentum; };
+	glm::mat3 GetInertiaTensor() { return InertiaTensorBody; };
 	float GetElasticity() { return elasticity; };
 	float GetFriction() { return friction; };
 	bool getKinematic() { return isKinematic; };
@@ -36,6 +40,9 @@ public:
 	void setFriction(float value) { friction = value; };
 	void SetMass(float _mass) { mass = _mass; };
 	void setKinematic(bool value) { isKinematic = value; };
+	void AddTorque(glm::vec3 torque);
+	void SetAngular_momentum() { };
+	void SetAngular_velocity() { };
 
 private:
 	Object* attachedObj;
@@ -44,8 +51,15 @@ private:
 	glm::vec3 velocity;
 	glm::vec3 force;
 	glm::vec3 rotationalVel;
+	glm::mat3 InertiaTensorBody;
+	float momentOfInertia;
+
+	glm::vec3 torque;
+	glm::vec3 angular_momentum;
+	glm::vec3 angular_velocity;
 
 	glm::vec3 CalculateMomentum() { return mass * velocity; };
+	glm::vec3 CalclateAngularVelocity();
 	
 	void Drag(float deltaTime);
 
@@ -56,7 +70,7 @@ private:
 	void Vertlet(float deltaTime);
 
 	bool isKinematic = true;
-	bool gravityAffected = false;
+	bool gravityAffected = true;
 
 	float elasticity, friction;
 	float mass = 1.0f;

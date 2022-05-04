@@ -216,18 +216,60 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 			float Mag = glm::dot(velocity, planes[planeNo]->normal);
 			if (Mag < 0 && collide)
 			{
+				//*******************************************************collision point calculations***************************************************
+
 				//calculates the position the sphere should be when colliding by multiplying 
 				//the normal of the plane by the radius of the sphere, and adding that to the collision point
 				desiredPos = IntersectPoint + (planes[planeNo]->normal * Sphere->GetSphereRadius() * 1.0f);
 
+				
+
+				//*******************************************************angular velocity to linear velocity calculations***************************************************
+
+
+				glm::mat3 InertiaTensorBody = Sphere->GetRigidbody()->GetInertiaTensor();
+
+				glm::mat3 rotationMatrix = glm::mat3(Sphere->GetRotation());
+
+				glm::mat3 InverseInertiaTensor = rotationMatrix * glm::inverse(InertiaTensorBody) * glm::transpose(rotationMatrix);
+
+				glm::vec3 torque;
+				glm::vec3 angular_momentum;
+				glm::vec3 angular_velocity;
+				glm::vec3 momentum = Sphere->GetRigidbody()->GetMomentum();
+
+				Mag = glm::dot(momentum, -planes[planeNo]->normal);
+				glm::vec3 momentumInParallel = momentum - (Mag * -planes[planeNo]->normal);
+
+				Mag = glm::dot(momentum, -planes[planeNo]->normal);
+				glm::vec3 momentumInDirection = Mag * -planes[planeNo]->normal;
+
+				float momentumScalar = sqrt((momentumInDirection.x * momentumInDirection.x) + (momentumInDirection.y * momentumInDirection.y) + (momentumInDirection.z * momentumInDirection.z));
+
+				float frictionForce = (momentumScalar*2) * Sphere->GetRigidbody()->GetFriction();
+
+				glm::vec3 friction = -glm::normalize(momentumInParallel) * frictionForce;
+
+				glm::vec3 changeInMomentum = (momentumInParallel - friction);
+
+				torque = changeInMomentum * Sphere->GetSphereRadius() + (-momentumInDirection - momentumInDirection);
+
+				Sphere->GetRigidbody()->AddTorque(torque);
+
+
+
+
+
+
+
 				//calculating the magnitude of the velocity in the direction of the plane
 				Mag = glm::dot(velocity, -planes[planeNo]->normal);
 
-				//retirving the angular velocity of the ball
+				//retrieving the angular velocity of the ball
 				glm::vec3 angVel = Sphere->GetRigidbody()->GetRotVel();
 
 				//converting the angular velocity to linear velocity at the edge of the sphere
-				glm::vec3 linVel = -angVel * Sphere->GetSphereRadius();
+				glm::vec3 linVel = angVel * Sphere->GetSphereRadius();
 
 				//calculating the angle between the origin, and the plane's normal
 				float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
@@ -251,7 +293,9 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				glm::vec3 newVel = linVel - velInDir;
 
 				//applying that change in velocity
-				Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.3f), VelocityChange);
+				//Sphere->GetRigidbody()->AddForce(newVel * (Sphere->GetRigidbody()->GetElasticity() * 0.3f), VelocityChange);
+
+				//*******************************************************bounciness calculations***************************************************
 
 				//calculating the velocity change of an elastic collision between the sphere and the plane
 				glm::vec3 force = planes[planeNo]->normal * Mag * 2.0f;
@@ -266,12 +310,14 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 
 				//retrieving the new velocity
 				velocity = Sphere->GetRigidbody()->GetVelocity();
-
+				glm::vec3 frictionVelocity = velocity * (1 - Sphere->GetRigidbody()->GetFriction() - velocity);
 				//taking friction into account with collisions
-				Sphere->GetRigidbody()->AddForce(velocity * (1 - Sphere->GetRigidbody()->GetFriction()) - velocity, VelocityChange);
+				Sphere->GetRigidbody()->AddForce(frictionVelocity, VelocityChange);
+
+				//*******************************************************rotational velocity calculations***************************************************
 
 				//recalculating the new rotational velocity of the sphere
-				glm::vec3 rotVel = glm::cross(planes[planeNo]->normal * Sphere->GetSphereRadius(), Sphere->GetRigidbody()->GetVelocity());
+				glm::vec3 rotVel = glm::cross(planes[planeNo]->normal * Sphere->GetSphereRadius(), -Sphere->GetRigidbody()->GetVelocity());
 
 				//applying the new rotational velocity
 				Sphere->GetRigidbody()->SetRotationalVel(rotVel);

@@ -462,10 +462,12 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	// 
 	//performing transformations on the model matrix
 	
-	
+	rotationQuat = glm::quat(glm::radians(rotation));
+
 	model = glm::translate(model, position);
 	model = glm::scale(model, scale);
-	model = setModelRotation(model);
+	//model = setModelRotation(model);
+	model = model * glm::mat4_cast(rotationQuat);
 
 
 	//setting the light position in the shader
@@ -584,9 +586,9 @@ glm::vec3 Object::GetPosition()
 	return position;
 }
 
-glm::vec3 Object::GetRotation()
+glm::quat Object::GetRotation()
 {
-	return rotation;
+	return rotationQuat;
 }
 
 float Object::GetSphereRadius()

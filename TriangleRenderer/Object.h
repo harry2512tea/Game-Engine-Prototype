@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <list>
 #include <vector>
+//#include <glm/gtx/quaternion.hpp>
 
 #include "Shader.h"
 #include "ObjectScript.h"
@@ -48,7 +49,7 @@ public:
 	DynamicObject* GetRigidbody() { return &Rigidbody; };
 	std::vector<OBBPlane*>& GetPlanes() { return OBBPlanes; };
 	glm::vec3 GetPosition();
-	glm::vec3 GetRotation();
+	glm::quat GetRotation();
 
 
 	glm::vec3 centerOffset, center, size, min, max;

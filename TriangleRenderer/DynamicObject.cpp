@@ -10,6 +10,29 @@ DynamicObject::DynamicObject(Object* obj) : attachedObj(obj)
 {
 	//velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	//rotationalVel = glm::vec3(-0.0f, 0.0f, -0.0f);
+
+	switch (attachedObj->GetColliderType())
+	{
+	case 0:
+		float width, height, depth;
+		width = attachedObj->size.x;
+		height = attachedObj->size.y;
+		depth = attachedObj->size.z;
+		float Ih, Iw, Id;
+		Ih = (1 / 12) * mass * (width * width + depth * depth);
+		Iw = (1 / 12) * mass * (depth * depth + height * height);
+		Id = (1 / 12) * mass * (width * width + height * height);
+
+		InertiaTensorBody = glm::mat3(
+			Iw, 0, 0,
+			0, Ih, 0,
+			0, 0, Id);
+		break;
+	case 1:
+		momentOfInertia = (2 / 5) * mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius();
+		InertiaTensorBody = glm::mat3(momentOfInertia);
+		break;
+	}
 }
 
 void DynamicObject::Update(float DeltaTime)
@@ -28,7 +51,7 @@ void DynamicObject::Update(float DeltaTime)
 		//std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 		//std::cout << "DeltaTime: " << DeltaTime << std::endl;
 
-		//Drag(DeltaTime);
+		Drag(DeltaTime);
 
 		//checking which update type to use
 		switch (UpdateType)
@@ -47,7 +70,7 @@ void DynamicObject::Update(float DeltaTime)
 			break;
 		}
 
-		
+		angular_momentum = ((2 / 5) * mass * attachedObj->GetSphereRadius() * attachedObj->GetSphereRadius()) * rotationalVel;
 		//updating the object's rotation by the rotational momentum
 		attachedObj->rotate(-glm::degrees(rotationalVel) * DeltaTime);
 		//std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
@@ -58,6 +81,15 @@ void DynamicObject::Update(float DeltaTime)
 		//resetting the forces acting on the object
 		force = glm::vec3(0.0f);
 	}
+}
+glm::vec3 DynamicObject::CalclateAngularVelocity()
+{
+
+}
+void DynamicObject::AddTorque(glm::vec3 torque)
+{
+	glm::vec3 changeInAngMomentum = torque - angular_momentum;
+	angular_momentum += changeInAngMomentum;
 }
 
 void DynamicObject::AddForce(glm::vec3 Force, ForceMode Mode)
@@ -80,7 +112,7 @@ void DynamicObject::Drag(float deltaTime)
 {
 	float pi = 3.1416;
 
-	float radius = attachedObj->GetSphereRadius();
+	float radius = attachedObj->GetSphereRadius()/10;
 
 	//density of dry air, at sea level, at 15 degrees C.
 	float airDensity = ObjectController::getInstance()->GetDensity();
