@@ -6,5 +6,5 @@
 5 collider type: ~1
 6 elasticity: ~0.9
 7 friction: ~0.6
-8 initial velocity: ~1.0,0.0,0.0
+8 initial velocity: ~0.0,0.0,0.0
 9 initial rotational velocity: ~0.0,0.0,0.0

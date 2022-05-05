@@ -462,7 +462,7 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	// 
 	//performing transformations on the model matrix
 	
-	rotationQuat = glm::quat(glm::radians(rotation));
+	rotationQuat = glm::quat(glm::radians(-rotation));
 
 	model = glm::translate(model, position);
 	model = glm::scale(model, scale);

@@ -24,6 +24,8 @@ private:
 		{ "Down", SDL_SCANCODE_C },
 		{ "RotLeft", SDL_SCANCODE_Q },
 		{ "RotRight", SDL_SCANCODE_E },
-		{ "Start", SDL_SCANCODE_X }
+		{ "Start", SDL_SCANCODE_X },
+		{ "spin1", SDL_SCANCODE_RIGHT },
+		{ "spin2", SDL_SCANCODE_LEFT }
 	};
 };

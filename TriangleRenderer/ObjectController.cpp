@@ -225,18 +225,21 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				
 
 				//*******************************************************angular velocity to linear velocity calculations***************************************************
-
-
 				glm::mat3 InertiaTensorBody = Sphere->GetRigidbody()->GetInertiaTensor();
 
 				glm::mat3 rotationMatrix = glm::mat3(Sphere->GetRotation());
 
 				glm::mat3 InverseInertiaTensor = rotationMatrix * glm::inverse(InertiaTensorBody) * glm::transpose(rotationMatrix);
-
+				
 				glm::vec3 torque;
 				glm::vec3 angular_momentum;
 				glm::vec3 angular_velocity;
 				glm::vec3 momentum = Sphere->GetRigidbody()->GetMomentum();
+
+				float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
+
+				//creates a quaternion to rotate the linear velocity to the point of collision
+				glm::quat rotat = glm::angleAxis(angle, glm::cross(planes[planeNo]->normal, glm::vec3(0, 1, 0)));
 
 				Mag = glm::dot(momentum, -planes[planeNo]->normal);
 				glm::vec3 momentumInParallel = momentum - (Mag * -planes[planeNo]->normal);
@@ -245,19 +248,44 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				glm::vec3 momentumInDirection = Mag * -planes[planeNo]->normal;
 
 				float momentumScalar = sqrt((momentumInDirection.x * momentumInDirection.x) + (momentumInDirection.y * momentumInDirection.y) + (momentumInDirection.z * momentumInDirection.z));
+				float momentumParallel = sqrt((momentumInParallel.x * momentumInParallel.x) + (momentumInParallel.y * momentumInParallel.y) + (momentumInParallel.z * momentumInParallel.z));
 
-				float frictionForce = (momentumScalar*2) * Sphere->GetRigidbody()->GetFriction();
+				if (momentumParallel != 0)
+				{
+					float frictionForce = (momentumScalar * 2) * Sphere->GetRigidbody()->GetFriction();
 
-				glm::vec3 friction = -glm::normalize(momentumInParallel) * frictionForce;
+					glm::vec3 friction = -glm::normalize(momentumInParallel) * frictionForce;
 
-				glm::vec3 changeInMomentum = (momentumInParallel - friction);
+					glm::vec3 desiredMomentum = ((-Sphere->GetRigidbody()->GetAngularVelocity() * Sphere->GetSphereRadius()) * Sphere->GetRigidbody()->GetMass());
 
-				torque = changeInMomentum * Sphere->GetSphereRadius() + (-momentumInDirection - momentumInDirection);
+					desiredMomentum = desiredMomentum * glm::quat(glm::radians(glm::vec3(0.0f, -90.0f, 0.0f)));
 
-				Sphere->GetRigidbody()->AddTorque(torque);
+					glm::vec3 changeMomentum = ((desiredMomentum)) - momentumInParallel;
 
-				Sphere->GetRigidbody()->AddForce(-glm::normalize(momentumInParallel) * frictionForce, Impulse);
+					Sphere->GetRigidbody()->AddForce(changeMomentum, Impulse);
 
+					glm::vec3 changeInMomentum = (momentumInParallel - friction);
+
+					torque = changeInMomentum * Sphere->GetSphereRadius() + (-momentumInDirection - momentumInDirection) + -changeMomentum * Sphere->GetSphereRadius();
+
+					Sphere->GetRigidbody()->AddTorque(torque);
+
+					Sphere->GetRigidbody()->AddForce(-glm::normalize(momentumInParallel) * frictionForce, Impulse);
+				}
+				else
+				{
+					glm::vec3 desiredMomentum = ((-Sphere->GetRigidbody()->GetAngularVelocity() * Sphere->GetSphereRadius()) * Sphere->GetRigidbody()->GetMass());
+
+					desiredMomentum = desiredMomentum * glm::quat(glm::radians(glm::vec3(0.0f, 90.0f, 0.0f)));
+
+					glm::vec3 changeMomentum = ((desiredMomentum)) - momentumInParallel;
+
+					Sphere->GetRigidbody()->AddForce(changeMomentum/Sphere->GetRigidbody()->GetMass() * (1-Sphere->GetRigidbody()->GetFriction()), VelocityChange);
+
+					torque = changeMomentum * Sphere->GetSphereRadius();
+
+					Sphere->GetRigidbody()->AddTorque(torque);
+				}
 
 
 
@@ -272,10 +300,10 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				glm::vec3 linVel = angVel * Sphere->GetSphereRadius();
 
 				//calculating the angle between the origin, and the plane's normal
-				float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
+				angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
 
 				//creates a quaternion to rotate the linear velocity to the point of collision
-				glm::quat rotat = glm::angleAxis(angle, glm::cross(planes[planeNo]->normal, glm::vec3(0, 1, 0)));
+				rotat = glm::angleAxis(angle, glm::cross(planes[planeNo]->normal, glm::vec3(0, 1, 0)));
 
 				//rotates the linear velocity vector to the correct orientation of the collision point.
 				linVel = linVel * glm::angleAxis(glm::radians(-90.0f), planes[planeNo]->normal);

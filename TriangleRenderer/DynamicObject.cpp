@@ -43,6 +43,7 @@ void DynamicObject::Update(float DeltaTime)
 	//checking if the object is dynamic or kinematic
 	if (!isKinematic)
 	{
+		force = glm::vec3(0.0f);
 		//adding the gravitational force to the object
 		if (gravityAffected)
 		{
@@ -76,14 +77,14 @@ void DynamicObject::Update(float DeltaTime)
 		
 		CalculateAngularVelocity();
 		//updating the object's rotation by the rotational momentum
-		attachedObj->rotate(-glm::degrees(angular_velocity) * DeltaTime);
+		attachedObj->rotate(glm::degrees(angular_velocity) * DeltaTime);
 		//std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 
 		//updating the objects momentum
 		momentum = CalculateMomentum();
 
 		//resetting the forces acting on the object
-		force = glm::vec3(0.0f);
+		
 	}
 }
 glm::vec3 DynamicObject::CalculateAngularVelocity()

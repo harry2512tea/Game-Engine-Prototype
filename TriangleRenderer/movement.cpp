@@ -13,7 +13,10 @@ void movement::Start()
 
 void movement::Update()
 {
-	attachedObj->rotate(glm::vec3(0.0f, 1.0f, 0.0f));
+
+	KeyInput();
+
+	//attachedObj->rotate(glm::vec3(0.0f, 1.0f, 0.0f));
 	//attachedObj->translation(glm::vec3(0.1f, 0.0f, 0.0f));
 	//if (attachedObj->GetPosition().x > 10)
 	//{
@@ -28,14 +31,14 @@ void movement::Update()
 void movement::KeyInput()
 {
 	Input* input = Input::getInstance();
-	if (input->GetAxis("Forward"))
+	if (input->GetAxis("spin1"))
 	{
-		std::cout << "Forward" << std::endl;
+		attachedObj->rotate(glm::vec3(0.0f, 0.0f, 0.5f));
 	}
 
-	if (input->GetAxis("Back"))
+	if (input->GetAxis("spin2"))
 	{
-		std::cout << "Back" << std::endl;
+		attachedObj->rotate(glm::vec3(0.0f, 0.0f, -0.5f));
 	}
 
 	if (input->GetAxis("Left"))
