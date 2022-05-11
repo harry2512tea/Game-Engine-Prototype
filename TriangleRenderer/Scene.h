@@ -29,6 +29,7 @@ private:
 	std::vector<std::string> Data;
 	ObjectController* kin = ObjectController::getInstance();
 	std::vector<Object*> objects;
+	std::vector<Object*> physicsObjects;
 	glm::vec3 LightPos, LightCol, camPos, camRot;
 	glm::mat4 cam;
 	SDL_Window *window;

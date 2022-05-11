@@ -1,10 +1,10 @@
 0 file Model Path: ~Models/Ball/sphere.obj
-1 file Texture Path: ~Models/636433355572898628.jpg
-2 initial position: ~14.0,5.0,-20.0
+1 file Texture Path: ~Models/Ball/ObamaSphere.jpg
+2 initial position: ~14.0,5.0,4.0
 3 initial rotation: ~0.0,0.0,0.0
 4 initial scale: ~1.0f,1.0,1.0
 5 collider type: ~1
 6 elasticity: ~0.95
 7 friction: ~0.1
-8 initial velocity: ~0.0,0.0,0.0
+8 initial velocity: ~0.0,0.0,-5.0
 9 initial rotational velocity: ~0.0,0.0,0.0

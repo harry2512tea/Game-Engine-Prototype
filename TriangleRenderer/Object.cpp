@@ -464,11 +464,12 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	
 	rotationQuat = glm::quat(glm::radians(-rotation));
 
+	
 	model = glm::translate(model, position);
-	model = glm::scale(model, scale);
+	
 	//model = setModelRotation(model);
 	model = model * glm::mat4_cast(rotationQuat);
-
+	model = glm::scale(model, scale);
 
 	//setting the light position in the shader
 	glUniform3f(lightLoc, lightPos.x, lightPos.y, lightPos.z);

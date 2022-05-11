@@ -25,6 +25,10 @@ private:
 		{ "RotLeft", SDL_SCANCODE_Q },
 		{ "RotRight", SDL_SCANCODE_E },
 		{ "Start", SDL_SCANCODE_X },
+		{"ramps", SDL_SCANCODE_1},
+		{"collide", SDL_SCANCODE_2},
+		{"bounce", SDL_SCANCODE_3},
+		{"spin", SDL_SCANCODE_4},
 		{ "spin1", SDL_SCANCODE_RIGHT },
 		{ "spin2", SDL_SCANCODE_LEFT }
 	};
