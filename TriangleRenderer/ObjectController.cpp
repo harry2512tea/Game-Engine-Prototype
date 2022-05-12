@@ -197,14 +197,7 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 	{
 		std::cout << planeNo << std::endl;
 		glm::vec3 velocity = Sphere->GetRigidbody()->GetVelocity();
-		if (planeNo != 0)
-		{
 
-			std::cout << "stop pls" << std::endl;
-		}
-
-
-		
 
 		//updates the collision point to the shortest distance between the sphere and plane using the plane's normal
 		bool collide = planes[planeNo]->getIntersection(-planes[planeNo]->normal, Sphere->GetPosition(), IntersectPoint, Sphere->GetSphereRadius());
@@ -225,10 +218,13 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				
 
 				//*******************************************************angular velocity to linear velocity calculations***************************************************
+				//getting the interia tensor of the sphere
 				glm::mat3 InertiaTensorBody = Sphere->GetRigidbody()->GetInertiaTensor();
 
+				//creating a temporary rotaion matrix
 				glm::mat3 rotationMatrix = glm::mat3(Sphere->GetRotation());
 
+				//calculating the inverse of the inertia tensor
 				glm::mat3 InverseInertiaTensor = rotationMatrix * glm::inverse(InertiaTensorBody) * glm::transpose(rotationMatrix);
 				
 				glm::vec3 torque;
@@ -236,40 +232,54 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 				glm::vec3 angular_velocity;
 				glm::vec3 momentum = Sphere->GetRigidbody()->GetMomentum();
 
+				//calculating the angle between the world's normal, and the plane's normal
 				float angle = glm::angle(glm::vec3(0, 1, 0), planes[planeNo]->normal);
 
 				//creates a quaternion to rotate the linear velocity to the point of collision
 				glm::quat rotat = glm::angleAxis(angle, glm::cross(planes[planeNo]->normal, glm::vec3(0, 1, 0)));
 
+				//calculating the magnitude of the momentum in parallel with the plane
 				Mag = glm::dot(momentum, -planes[planeNo]->normal);
 				glm::vec3 momentumInParallel = momentum - (Mag * -planes[planeNo]->normal);
 
+				//calculating the momentum in the direction of the plane
 				Mag = glm::dot(momentum, -planes[planeNo]->normal);
 				glm::vec3 momentumInDirection = Mag * -planes[planeNo]->normal;
 
+				//converting the momentum into a scalar quantity for later calculations
 				float momentumScalar = sqrt((momentumInDirection.x * momentumInDirection.x) + (momentumInDirection.y * momentumInDirection.y) + (momentumInDirection.z * momentumInDirection.z));
 				float momentumParallel = sqrt((momentumInParallel.x * momentumInParallel.x) + (momentumInParallel.y * momentumInParallel.y) + (momentumInParallel.z * momentumInParallel.z));
 
 				if (momentumParallel != 0)
 				{
+					//calculating the scalar force on the object due to friction
 					float frictionForce = (momentumScalar * 2) * Sphere->GetRigidbody()->GetFriction();
 
+					//calculating the directional force on the object due to friction
 					glm::vec3 friction = -glm::normalize(momentumInParallel) * frictionForce;
 
+					//calculating the desired momentum due to friction
 					glm::vec3 desiredMomentum = ((-Sphere->GetRigidbody()->GetAngularVelocity() * Sphere->GetSphereRadius()) * Sphere->GetRigidbody()->GetMass());
 
+					//rotating the desiredMomentum due to how angular velocity is stored
 					desiredMomentum = desiredMomentum * glm::quat(glm::radians(glm::vec3(0.0f, -90.0f, 0.0f)));
 
+					//calculating the change in momentum required for the collision
 					glm::vec3 changeMomentum = ((desiredMomentum)) - momentumInParallel;
 
+					//applying the calculated force on the object
 					Sphere->GetRigidbody()->AddForce(changeMomentum, Impulse);
 
+					//calculating the change in momentum due to friction
 					glm::vec3 changeInMomentum = (momentumInParallel - friction);
 
+					//calculating the torque acting on the object due to the collision, using the change in momentum
 					torque = changeInMomentum * Sphere->GetSphereRadius() + (-momentumInDirection - momentumInDirection) + -changeMomentum * Sphere->GetSphereRadius();
 
+					//applying the new torque
 					Sphere->GetRigidbody()->AddTorque(torque);
 
+					//applying the force due to friction
 					Sphere->GetRigidbody()->AddForce(-glm::normalize(momentumInParallel) * frictionForce, Impulse);
 				}
 				else

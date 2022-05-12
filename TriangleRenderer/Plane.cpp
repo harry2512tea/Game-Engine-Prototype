@@ -122,7 +122,7 @@ bool OBBPlane::CheckIntersection(glm::vec3 Direction, glm::vec3 Origin, glm::vec
 	if (glm::dot(normal, Direction) == 0)
 	{
 		//direction does not intersect the plane
-		std::cout << "check intersection returning false 1" << std::endl;
+		//std::cout << "check intersection returning false 1" << std::endl;
 		return false;
 	}
 	else
@@ -141,12 +141,12 @@ bool OBBPlane::CheckIntersection(glm::vec3 Direction, glm::vec3 Origin, glm::vec
 			(Intersect.y >= minBounds.y && Intersect.y <= maxBounds.y) &&
 			(Intersect.z >= minBounds.z && Intersect.z <= maxBounds.z))
 		{
-			std::cout << "check intersection returning true" << std::endl;
+			//std::cout << "check intersection returning true" << std::endl;
 			return true;
 		}
 		else
 		{
-			std::cout << "check intersection returning false" << std::endl;
+			//std::cout << "check intersection returning false" << std::endl;
 			return false;
 		}
 	}
@@ -170,12 +170,12 @@ bool OBBPlane::getIntersection(glm::vec3 Direction, glm::vec3 Origin, glm::vec3&
 			(Intersect.y >= minBounds.y  && Intersect.y <= maxBounds.y ) &&
 			(Intersect.z >= minBounds.z  && Intersect.z <= maxBounds.z ))
 		{
-			std::cout << "check intersection returning true" << std::endl;
+			//std::cout << "check intersection returning true" << std::endl;
 			return true;
 		}
 		else
 		{
-			std::cout << "check intersection returning false" << std::endl;
+			//std::cout << "check intersection returning false" << std::endl;
 			return false;
 		}
 	}
