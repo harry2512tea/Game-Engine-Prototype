@@ -4,13 +4,16 @@
 #include <string>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/fwd.hpp>
 #include <SDL2/SDL.h>
 #include <list>
 #include <vector>
+//#include <glm/gtx/quaternion.hpp>
 
 #include "Shader.h"
 #include "ObjectScript.h"
-#include "Kinematic.h"
+#include "DynamicObject.h"
+#include "Plane.h"
 
 class Object
 {
@@ -28,50 +31,66 @@ public:
 	~Object();
 
 	void Update(float DeltaTime);
+	void UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address);
 	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam);
-
-	void translate(glm::vec3 translation);
-	void rotate(glm::vec3 _rotation);
-
-	void SetPosition(glm::vec3 pos);
-	void SetRotation(glm::vec3 rot);
-
-	void AddScript(ObjectScript* _script);
 	void StartScripts();
 
-	int GetColliderType();
+	void translation(glm::vec3 movement);
+	void rotate(glm::vec3 _rotation);
+	void AddScript(ObjectScript* _script);
+	void SetPosition(glm::vec3 pos);
+	void SetRotation(glm::vec3 rot);
+	void SetColliderType(int col) { colliderType = col; };
+
+	// 0 = OBB
+	// 1 = Sphere Collider
+	int GetColliderType() { return colliderType; };
 	float GetSphereRadius();
-	void UpdatePhysics(float DeltaTime, std::vector<Object>& objs, int address);
-
-	Kinematic* GetRigidbody();
-
+	DynamicObject* GetRigidbody() { return &Rigidbody; };
+	std::vector<OBBPlane*>& GetPlanes() { return OBBPlanes; };
 	glm::vec3 GetPosition();
-	glm::vec3 GetRotation();
+	glm::quat GetRotation();
+
+
 	glm::vec3 centerOffset, center, size, min, max;
 
 private:
-	
-	Kinematic Rigidbody;
 
+
+	int width, height;
+	WfModel objectModel = { 0 };
+	DynamicObject Rigidbody;
+	glm::mat4 model;
+	std::vector<glm::vec3> vertices;
+	std::vector<ObjectScript*> scripts;
+	glm::vec3 scale = glm::vec3(0.0f);
+	glm::vec3 previousPos;
+	glm::vec3 previousRot;
+	glm::vec3 previousScale;
+	glm::vec3 position = glm::vec3(0.0f);
+	glm::vec3 rotation = glm::vec3(0.0f);
+	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc;
+
+	glm::mat4 setModelRotation(glm::mat4 model);
 	GLuint GenTexture(const std::string& _texturePath);
-
 	void GetVertices(const std::string& _modelPath);
 	void calculateAABB();
-	
-	std::vector < glm::vec3> vertices;
-	std::vector<ObjectScript*> scripts;
-	int ScriptNo = 0;
-	WfModel objectModel = { 0 };
-	glm::vec3 scale;
-	glm::vec3 position;
-	glm::vec3 rotation;
+	void calculateOBB();
+	void UpdateCollider();
 
-	//bounding boxes
-	glm::vec3 minOffset, maxOffset;
+	//Colliders
+	int colliderType = 0;
+	bool isTrigger;
+
+	//Sphere collider
 	float colliderRadius;
-	
-	
-	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc;
-	int width, height;
-	glm::mat4 setModelRotation(glm::mat4 model);
+
+	//Axis Aligned Bounding Box
+	glm::vec3 initialMin, initialMax = glm::vec3(0.0f);
+	std::vector<AABBPlane*> Planes;
+
+	//Oriented Bounding Box
+	glm::vec3 OBBinitialMin, OBBinitialMax = glm::vec3(0.0f);
+	glm::quat rotationQuat;
+	std::vector<OBBPlane*> OBBPlanes;
 };

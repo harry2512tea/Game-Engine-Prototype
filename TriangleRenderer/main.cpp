@@ -5,6 +5,8 @@
 #include <glm/ext.hpp>
 #include <stdexcept>
 #include <list>
+#include <iostream>
+#include <fstream> 
 
 //#include <wavefront/wavefront.h>
 
@@ -19,8 +21,8 @@
 
 int main()
 {
-	int windowWidth = 960;
-	int windowHeight = 540;
+	int windowWidth = 1440;
+	int windowHeight = 810;
 	SDL_Window *window = SDL_CreateWindow("haha window go brrrr", 
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		windowWidth, windowHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
@@ -54,7 +56,7 @@ int main()
 
 	glm::vec3 LightPos(-10.0f, 10.0f, 10.0f);
 
-	Scene mainScene = Scene(LightPos, window);
+	Scene mainScene = Scene(window, "SceneData/MainScene.txt");
 
 	
 
@@ -99,9 +101,18 @@ int main()
 
 		SDL_GL_SwapWindow(window);
 
-		currentTime = SDL_GetTicks();
-		deltaTime = (float)(currentTime - lastTime) / 1000.0f;
+		//currentTime = SDL_GetTicks();
+		//deltaTime = (float)(currentTime - lastTime) / 1000.0f;
+		//lastTime = currentTime;
+
+		currentTime = SDL_GetPerformanceCounter();
+		deltaTime = (float)((currentTime - lastTime) / (float)SDL_GetPerformanceFrequency());
 		lastTime = currentTime;
+
+		if (deltaTime > 0.1f)
+		{
+			deltaTime = 0.1f;
+		}
 
 		mainScene.updateObjects(deltaTime);
 

@@ -1,0 +1,7 @@
+0 Initial camera position: ~-10.0,4.0,0.0
+1 Initial camera rotation ~0.0,0.0,0.0
+2 Initial light source position ~-10.0,10.0,10.0
+3 Light source colour ~1.0,1.0,1.0
+4 Gravity constant: ~0.0,-9.81,0.0
+5 Density of the Air: ~1.225
+6 File containing list of objects: ~SceneData/ObjectList.txt
