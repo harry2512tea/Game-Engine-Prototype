@@ -9,8 +9,8 @@ public:
 	{}
 	virtual void Update() {};
 	virtual void Start() {};
-	virtual void OnCollisionEnter() {};
-	virtual void OnTriggerEnter() {};
+	virtual void OnCollisionEnter(Object* collision) {};
+	virtual void OnTriggerEnter(Object* collision) {};
 protected:
 	Object* attachedObj;
 };

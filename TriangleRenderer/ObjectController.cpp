@@ -32,7 +32,7 @@ void ObjectController::CheckGeneralCollisions(std::vector<Object*>& objs)
 				//checking if the two objects are colliding
 				if (checkCollision(objs[i], objs[O]))
 				{
-					//std::cout << "Collision " << i << " " << O << std::endl;
+					std::cout << "Collision " << i << " " << O << std::endl;
 					//running collision response
 					CheckCollisionResponse(objs[i], objs[O]);
 				}
@@ -126,12 +126,12 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 {
 	if (OBB->GetTrigger())
 	{
-		Sphere->EnterTrigger();
+		Sphere->EnterTrigger(OBB);
 		return false;
 	}
 	else if (Sphere->GetTrigger())
 	{
-		OBB->EnterTrigger();
+		OBB->EnterTrigger(Sphere);
 		return false;
 	}
 	else
@@ -372,8 +372,8 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 					//applying the new rotational velocity
 					Sphere->GetRigidbody()->SetRotationalVel(rotVel);
 
-					Sphere->EnterCollision();
-					OBB->EnterCollision();
+					Sphere->EnterCollision(OBB);
+					OBB->EnterCollision(Sphere);
 					return true;
 				}
 			}
@@ -387,12 +387,12 @@ bool ObjectController::SphereSphereCollision(Object* obj1, Object* obj2)
 {
 	if (obj1->GetTrigger() && !obj2->GetTrigger())
 	{
-		obj2->EnterTrigger();
+		obj2->EnterTrigger(obj1);
 		return false;
 	}
 	else if (obj2->GetTrigger() && !obj1->GetTrigger())
 	{
-		obj1->EnterTrigger();
+		obj1->EnterTrigger(obj2);
 		return false;
 	}
 	else
@@ -451,8 +451,8 @@ bool ObjectController::SphereSphereCollision(Object* obj1, Object* obj2)
 			glm::vec3 desiredPoint = (CPVector * obj2->GetSphereRadius()) + CollisionPoint;
 			obj1->SetPosition(desiredPoint);
 		}
-		obj1->EnterCollision();
-		obj2->EnterCollision();
+		obj1->EnterCollision(obj2);
+		obj2->EnterCollision(obj1);
 		return true;
 		
 	}

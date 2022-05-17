@@ -526,19 +526,19 @@ void Object::UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int addr
 	UpdateCollider();
 }
 
-void Object::EnterCollision()
+void Object::EnterCollision(Object* collision)
 {
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		scripts[i]->OnCollisionEnter();
+		scripts[i]->OnCollisionEnter(Object * collision);
 	}
 }
 
-void Object::EnterTrigger()
+void Object::EnterTrigger(Object* collision)
 {
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		scripts[i]->OnTriggerEnter();
+		scripts[i]->OnTriggerEnter(Object * collision);
 	}
 }
 

@@ -14,7 +14,7 @@ void Player::Update()
 	KeyInput();
 }
 
-void Player::OnCollisionEnter()
+void Player::OnCollisionEnter(Object* collision)
 {
 	if (input->GetAxis("Up") && canJump)
 	{

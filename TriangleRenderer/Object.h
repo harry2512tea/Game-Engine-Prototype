@@ -34,8 +34,8 @@ public:
 	void UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address);
 	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam);
 	void StartScripts();
-	void EnterTrigger();
-	void EnterCollision();
+	void EnterTrigger(Object* collision);
+	void EnterCollision(Object* collision);
 
 	void translation(glm::vec3 movement);
 	void rotate(glm::vec3 _rotation);

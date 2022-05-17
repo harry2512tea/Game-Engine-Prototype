@@ -12,7 +12,7 @@ public:
 	SceneTime* time = SceneTime::getInstance();
 	Input* input = Input::getInstance();
 	void Update() override;
-	void OnCollisionEnter() override;
+	void OnCollisionEnter(Object* collision) override;
 	void KeyInput();
 
 	glm::vec3 movement;

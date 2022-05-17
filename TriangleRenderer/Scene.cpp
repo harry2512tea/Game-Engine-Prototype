@@ -95,7 +95,7 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 	objects.back()->SetColliderType(1);
 	objects.back()->GetRigidbody()->setKinematic(false);
 	objects.back()->AddScript(new Player(objects.back()));
-	objects.back()->SetSphereRadius(0.5f);
+	objects.back()->SetSphereRadius(5.95f);
 
 	//creating the rest of the scene
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -6.0f, 0.0f)));
