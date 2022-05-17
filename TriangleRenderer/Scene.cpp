@@ -70,7 +70,7 @@ void Scene::DrawScene()
 	glEnable(GL_DEPTH_TEST);
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, cam);
+		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, cam, camPos);
 	}
 	glDisable(GL_DEPTH_TEST);
 }

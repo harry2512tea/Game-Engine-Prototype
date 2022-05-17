@@ -1,4 +1,5 @@
 uniform sampler2D u_Texture;
+uniform vec3 viewPos;
 
 varying vec2 v_TexCoord;
 varying vec3 v_Normal;
@@ -20,6 +21,15 @@ void main()
 
   vec3 light = max(diffuse, ambient);
   vec4 tex = texture2D(u_Texture, v_TexCoord);
+
+
+  float specularStrength = 1.0;
+  vec3 viewDir = normalize(viewPos - v_FragPos);
+  vec3 reflectDir = reflect(-lightDir, N);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
+  vec3 specular = specularStrength * spec * v_LightColor;
+
+  light = max(diffuse, ambient) + specular;
 
   gl_FragColor = tex * vec4(light, 1);
 }

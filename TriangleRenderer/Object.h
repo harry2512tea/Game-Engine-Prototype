@@ -32,7 +32,7 @@ public:
 
 	void Update(float DeltaTime);
 	void UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address);
-	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam);
+	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam, glm::vec3 camPos);
 	void StartScripts();
 	void EnterTrigger(Object* collision);
 	void EnterCollision(Object* collision);
@@ -75,7 +75,7 @@ private:
 	
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f);
-	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc;
+	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc, viewPosLoc;
 
 	glm::mat4 setModelRotation(glm::mat4 model);
 	GLuint GenTexture(const std::string& _texturePath);
@@ -83,6 +83,8 @@ private:
 	void calculateAABB();
 	void calculateOBB();
 	void UpdateCollider();
+
+	void GetUniforms(Shader shad);
 
 	//Colliders
 	int colliderType = 0;

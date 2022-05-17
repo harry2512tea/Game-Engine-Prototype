@@ -28,11 +28,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	GetUniforms(shad);
 	
 }
 
@@ -53,11 +49,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	GetUniforms(shad);
 	
 }
 
@@ -78,11 +70,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	GetUniforms(shad);
 
 }
 
@@ -103,11 +91,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	objectModel.textureId = GenTexture(_texturePath);
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	GetUniforms(shad);
 	
 
 }
@@ -127,11 +111,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	calculateAABB();
 	calculateOBB();
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	GetUniforms(shad);
 	
 }
 
@@ -152,11 +132,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	calculateAABB();
 	calculateOBB();
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
+	GetUniforms(shad);
 	
 	
 }
@@ -176,12 +152,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos) : Rigi
 	calculateAABB();
 	calculateOBB();
 
-	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
-	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
-	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
-	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
-	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
-
+	GetUniforms(shad);
 	
 }
 
@@ -200,13 +171,20 @@ Object::Object(const std::string& _modelPath, Shader shad) : Rigidbody(this)
 	calculateAABB();
 	calculateOBB();
 
+	GetUniforms(shad);
+
+	
+
+}
+
+void Object::GetUniforms(Shader shad)
+{
 	projectionLoc = glGetUniformLocation(shad.getProgId(), "u_Projection");
 	modelLoc = glGetUniformLocation(shad.getProgId(), "u_Model");
 	viewLoc = glGetUniformLocation(shad.getProgId(), "u_View");
 	lightLoc = glGetUniformLocation(shad.getProgId(), "u_Light");
 	lightColLoc = glGetUniformLocation(shad.getProgId(), "u_LightColor");
-	
-
+	viewPosLoc = glGetUniformLocation(shad.getProgId(), "viewPos");
 }
 
 Object::~Object()
@@ -445,7 +423,7 @@ void Object::UpdateCollider()
 	previousScale = scale;
 }
 
-void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam)
+void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam, glm::vec3 camPos)
 {
 	SDL_GetWindowSize(window, &width, &height);
 	
@@ -476,6 +454,8 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 
 	//setting the light colour in the shader
 	glUniform3f(lightColLoc, lightCol.x, lightCol.y, lightCol.z);
+
+	glUniform3f(viewPosLoc, camPos.x, camPos.y, camPos.z);
 
 	//uploading the model matrix to the shader
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -530,7 +510,7 @@ void Object::EnterCollision(Object* collision)
 {
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		scripts[i]->OnCollisionEnter(Object * collision);
+		scripts[i]->OnCollisionEnter(collision);
 	}
 }
 
@@ -538,7 +518,7 @@ void Object::EnterTrigger(Object* collision)
 {
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		scripts[i]->OnTriggerEnter(Object * collision);
+		scripts[i]->OnTriggerEnter(collision);
 	}
 }
 

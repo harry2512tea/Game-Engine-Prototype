@@ -20,7 +20,7 @@ void movement::Update()
 	if (attachedObj->GetPosition().x < -126)
 	{
 		glm::vec3 pos = attachedObj->GetPosition();
-		attachedObj->SetPosition(glm::vec3(133.0f, -6.0f, 0.0f));
+		attachedObj->SetPosition(glm::vec3(133.0f, pos.y, pos.z));
 	}
 
 	movementspeed += time->GetDeltaTime();
