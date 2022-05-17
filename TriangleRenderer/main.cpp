@@ -1,3 +1,4 @@
+#pragma once
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -15,12 +16,15 @@
 #include "Shader.h"
 #include "Object.h"
 #include "Scene.h"
+#include "Time.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
 #include <STB/stb_image.h>
 
 int main()
 {
+	SceneTime* time = SceneTime::getInstance();
+
 	int windowWidth = 1440;
 	int windowHeight = 810;
 	SDL_Window *window = SDL_CreateWindow("haha window go brrrr", 
@@ -43,6 +47,8 @@ int main()
 	unsigned int lastTime = 0;
 	unsigned int currentTime = 0;
 	float deltaTime = 0.0166666667f;
+
+	time->SetDeltaTime(deltaTime);
 
 	bool quit = false;
 
@@ -113,7 +119,7 @@ int main()
 		{
 			deltaTime = 0.1f;
 		}
-
+		time->SetDeltaTime(deltaTime);
 		mainScene.updateObjects(deltaTime);
 
 	}

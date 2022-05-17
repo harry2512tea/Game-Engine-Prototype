@@ -526,6 +526,23 @@ void Object::UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int addr
 	UpdateCollider();
 }
 
+void Object::EnterCollision()
+{
+	for (size_t i = 0; i < scripts.size(); i++)
+	{
+		scripts[i]->OnCollisionEnter();
+		std::cout << "OnCollidingScript" << std::endl;
+	}
+}
+
+void Object::EnterTrigger()
+{
+	for (size_t i = 0; i < scripts.size(); i++)
+	{
+		scripts[i]->OnTriggerEnter();
+	}
+}
+
 glm::mat4 Object::setModelRotation(glm::mat4 _model)
 {
 	//generating a rotation matrix and multiplying the transform matrix by it

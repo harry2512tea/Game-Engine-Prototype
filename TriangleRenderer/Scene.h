@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "ObjectScript.h"
 #include "movement.h"
+#include "Player.h"
 #include "ObjectController.h"
 #include "Input.h"
 

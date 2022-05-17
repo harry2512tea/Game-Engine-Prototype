@@ -34,6 +34,8 @@ public:
 	void UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address);
 	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam);
 	void StartScripts();
+	void EnterTrigger();
+	void EnterCollision();
 
 	void translation(glm::vec3 movement);
 	void rotate(glm::vec3 _rotation);
@@ -41,10 +43,12 @@ public:
 	void SetPosition(glm::vec3 pos);
 	void SetRotation(glm::vec3 rot);
 	void SetColliderType(int col) { colliderType = col; };
+	void SetTrigger(bool value) { isTrigger = value; };
 
 	// 0 = OBB
 	// 1 = Sphere Collider
 	int GetColliderType() { return colliderType; };
+	bool GetTrigger() { return isTrigger; };
 	float GetSphereRadius();
 	DynamicObject* GetRigidbody() { return &Rigidbody; };
 	std::vector<OBBPlane*>& GetPlanes() { return OBBPlanes; };

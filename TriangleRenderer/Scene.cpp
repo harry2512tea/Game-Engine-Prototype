@@ -56,81 +56,6 @@ void Scene::updateObjects(float DeltaTime)
 	Input* input = Input::getInstance();
 
 	glm::quat camRotation = glm::quat(glm::radians(-camRot));
-	if (input->GetAxis("Start"))
-	{
-		for (size_t i = 0; i < physicsObjects.size(); i++)
-		{
-			objects[i]->GetRigidbody()->setKinematic(false);
-		}
-	}
-
-	if (input->GetAxis("ramps"))
-	{
-		for (size_t i = 0; i < 3; i++)
-		{
-			objects[i]->GetRigidbody()->setKinematic(false);
-		}
-	}
-	if (input->GetAxis("collide"))
-	{
-		for (size_t i = 3; i < 5; i++)
-		{
-			objects[i]->GetRigidbody()->setKinematic(false);
-		}
-	}
-	if (input->GetAxis("bounce"))
-	{
-		for (size_t i = 5; i < 8; i++)
-		{
-			objects[i]->GetRigidbody()->setKinematic(false);
-		}
-	}
-	if (input->GetAxis("spin"))
-	{
-		for (size_t i = 8; i < 10; i++)
-		{
-			objects[i]->GetRigidbody()->setKinematic(false);
-		}
-	}
-
-
-
-	if (input->GetAxis("Forward"))
-	{
-		camPos += (glm::vec3(0.0f, 0.0f, -0.5f) * camRotation);
-	}
-
-	if (input->GetAxis("Back"))
-	{
-		camPos += (glm::vec3(0.0f, 0.0f, 0.5f) * camRotation);
-	}
-
-	if (input->GetAxis("Left"))
-	{
-		camPos += (glm::vec3(-0.5f, 0.0f, 0.0f) * camRotation);
-	}
-
-	if (input->GetAxis("Right"))
-	{
-		camPos += (glm::vec3(0.5f, 0.0f, 0.0f) * camRotation);
-	}
-
-	if (input->GetAxis("Up"))
-	{
-		camPos += glm::vec3(0.0f, 0.5f, 0.0f);
-	}
-	if (input->GetAxis("Down"))
-	{
-		camPos += glm::vec3(0.0f, -0.5f, 0.0f);
-	}
-	if (input->GetAxis("RotLeft"))
-	{
-		camRot += glm::vec3(0.0f, 2.0f, 0.0f);
-	}
-	if (input->GetAxis("RotRight"))
-	{
-		camRot += glm::vec3(0.0f, -2.0f, 0.0f);
-	}
 }
 
 void Scene::DrawScene()
@@ -141,7 +66,7 @@ void Scene::DrawScene()
 	
 
 	glEnable(GL_DEPTH_TEST);
-	for (size_t i = 0; i < objects.size() - 1; i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, cam);
 	}
@@ -162,37 +87,30 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 	
 
 	//initialising the physics objects
-	CreatePhysicsObjects(ObjectList);
-	//objects.push_back(new Object("Models/Ball/sphere.obj", "Models/Ball/WelcomeMatClear_diffuse.jpg", SceneShader, glm::vec3(-8, 5, -10)));
-	//objects.push_back(new Object("Models/Ball/sphere.obj", "Models/Ball/WelcomeMatClear_diffuse.jpg", SceneShader, glm::vec3(0, 5, -10)));
+	//CreatePhysicsObjects(ObjectList);
+	
+	objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(0, 4, 0)));
+	objects.back()->SetColliderType(1);
+	objects.back()->GetRigidbody()->setKinematic(false);
+	objects.back()->AddScript(new Player(objects.back()));
 
 	//creating the rest of the scene
+	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -6.0f, 0.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
+
+	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(-87.0f, -6.0f, 0.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
+
+	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(87.0f, -6.0f, 0.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
 	//objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(2, 4, -30), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(1.0f)));
 	//objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(-2, 4, -30)));
 
-
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -7.0f, -15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, 15.0f, -15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, 0.0f, -30.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.5f, 0.5f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(-65.0f, -7.0f, -15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 20.0f, 1.0f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(40.0f, -7.0f, -15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 20.0f, 1.0f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(23.0f, 0.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.5f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(23.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.5f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(-40.0f, 0.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.5f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(-40.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.5f)));
-
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(14.0f, -3.0f, -25.0f), glm::vec3(0.0f, 0.0f, -45.0f), glm::vec3(0.1f, 0.5f, 0.1f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(14.0f, -3.5f, -20.0f), glm::vec3(0.0f, 0.0f, -30.0f), glm::vec3(0.1f, 0.5f, 0.1f)));
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(14.0f, -4.5f, -15.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.1f, 0.5f, 0.1f)));
-
-	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(-10.0f, 4.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(5.0f)));
-
-	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -5.0f, -23.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.01f, 10.0f, 0.4f)));
 	//objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(40.0f, -6.0f, -10.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(0.1f, 0.5f, 0.1f)));
 	
 
 	//Attaching custom scripts to specified objects
-	objects[objects.size() - 2]->AddScript(new movement(objects[objects.size()-2]));
+	
 }
 
 glm::mat4 Scene::setCamRotation(glm::mat4 _cam)
