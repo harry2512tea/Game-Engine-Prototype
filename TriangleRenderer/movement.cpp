@@ -14,15 +14,17 @@ void movement::Start()
 
 void movement::Update()
 {
-	float movementspeed = 1.0f;
 	glm::vec3 direction = glm::vec3(-1.0f, 0.0f, 0.0f);
 	
-	attachedObj->translation(direction);
+	attachedObj->translation(direction * movementspeed * time->GetDeltaTime());
 	if (attachedObj->GetPosition().x < -126)
 	{
 		glm::vec3 pos = attachedObj->GetPosition();
-		attachedObj->SetPosition(glm::vec3(134.0f, -6.0f, 0.0f));
+		attachedObj->SetPosition(glm::vec3(133.0f, -6.0f, 0.0f));
 	}
+
+	movementspeed += time->GetDeltaTime();
+	movementspeed = round(movementspeed * 10) / 10;
 	//KeyInput();
 }
 

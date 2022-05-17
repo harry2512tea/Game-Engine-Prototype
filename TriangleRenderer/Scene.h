@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "ObjectController.h"
 #include "Input.h"
+#include "Avoid.h"
 
 class Scene
 {

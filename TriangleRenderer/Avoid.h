@@ -1,15 +1,15 @@
 #pragma once
 #include "ObjectScript.h"
 #include "Time.h"
+#include "Input.h"
+#include <glm/glm.hpp>
 
-class movement : public ObjectScript
+class Avoid : public ObjectScript
 {
 	using ObjectScript::ObjectScript;
-public:
-	float movementspeed = 4.0f;
-	SceneTime* time = SceneTime::getInstance();
-	void Start() override;
-	void Update() override;
 
-	void KeyInput();
+public:
+	SceneTime* time = SceneTime::getInstance();
+	Input* input = Input::getInstance();
+	void Update() override;
 };

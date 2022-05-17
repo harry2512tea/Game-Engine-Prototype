@@ -325,10 +325,10 @@ void Object::calculateAABB()
 	size = glm::vec3(max_x - min_x, max_y - min_y, max_z - min_z);
 
 	//calculating the center point of the bounding box
-	centerOffset = glm::vec3((min_x + max_x) / 2, (min_y + max_y) / 2, (min_z + max_z) / 2);
+	colliderOffset = size / 2.0f;
 
 	//setting the center to the position of the object
-	center = glm::vec3(position.x + centerOffset.x, position.y + centerOffset.y, position.z + centerOffset.z);
+	//center = glm::vec3(position.x + centerOffset.x, position.y + centerOffset.y, position.z + centerOffset.z);
 
 	//setting the initial min and max co-ordinates of the bounding box
 	initialMin = glm::vec3(min_x, min_y, min_z);
@@ -531,7 +531,6 @@ void Object::EnterCollision()
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
 		scripts[i]->OnCollisionEnter();
-		std::cout << "OnCollidingScript" << std::endl;
 	}
 }
 

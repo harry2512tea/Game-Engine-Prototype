@@ -55,6 +55,8 @@ void Scene::updateObjects(float DeltaTime)
 
 	Input* input = Input::getInstance();
 
+	camPos = objects[0]->GetPosition() + glm::vec3(0.0f, 8.0f, 20.0f);
+
 	glm::quat camRotation = glm::quat(glm::radians(-camRot));
 }
 
@@ -89,10 +91,11 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 	//initialising the physics objects
 	//CreatePhysicsObjects(ObjectList);
 	
-	objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(0, 4, 0)));
+	objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(0, 4, 0), glm::vec3(0.0f, -90.0f, 0.0f)));
 	objects.back()->SetColliderType(1);
 	objects.back()->GetRigidbody()->setKinematic(false);
 	objects.back()->AddScript(new Player(objects.back()));
+	objects.back()->SetSphereRadius(0.5f);
 
 	//creating the rest of the scene
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(0.0f, -6.0f, 0.0f)));
@@ -103,6 +106,26 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(87.0f, -6.0f, 0.0f)));
 	objects.back()->AddScript(new movement(objects.back()));
+
+	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(87.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
+	objects.back()->AddScript(new Avoid(objects.back()));
+
+	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
+	objects.back()->AddScript(new Avoid(objects.back()));
+
+	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(-46.0f, 0.0f,-10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
+	objects.back()->AddScript(new Avoid(objects.back()));
+
+	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(-62.0f, 0.0f, -15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
+	objects.back()->AddScript(new Avoid(objects.back()));
+
+	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime.jpg", SceneShader, glm::vec3(46.0f, 0.0f, 12.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
+	objects.back()->AddScript(new movement(objects.back()));
+	objects.back()->AddScript(new Avoid(objects.back()));
 	//objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(2, 4, -30), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(1.0f)));
 	//objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(-2, 4, -30)));
 

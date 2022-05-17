@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Avoid.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="DynamicObject.cpp" />
     <ClCompile Include="ObjectController.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Avoid.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="DynamicObject.h" />
     <ClInclude Include="ObjectController.h" />

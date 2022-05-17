@@ -44,6 +44,7 @@ public:
 	void SetRotation(glm::vec3 rot);
 	void SetColliderType(int col) { colliderType = col; };
 	void SetTrigger(bool value) { isTrigger = value; };
+	void SetSphereRadius(float value) { colliderRadius = value; };
 
 	// 0 = OBB
 	// 1 = Sphere Collider
@@ -71,6 +72,7 @@ private:
 	glm::vec3 previousPos;
 	glm::vec3 previousRot;
 	glm::vec3 previousScale;
+	
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f);
 	GLuint projectionLoc, modelLoc, viewLoc, lightLoc, lightColLoc;
@@ -85,6 +87,7 @@ private:
 	//Colliders
 	int colliderType = 0;
 	bool isTrigger;
+	glm::vec3 colliderOffset;
 
 	//Sphere collider
 	float colliderRadius;

@@ -207,7 +207,7 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 		//checks if there was a collision
 		if (planeNo > -1)
 		{
-			std::cout << planeNo << std::endl;
+			//std::cout << planeNo << std::endl;
 			glm::vec3 velocity = Sphere->GetRigidbody()->GetVelocity();
 
 
