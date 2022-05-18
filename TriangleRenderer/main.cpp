@@ -60,7 +60,7 @@ int main()
 
 	Shader ss("shaders/postprocess.vert", "shaders/null.frag");
 
-	glm::vec3 LightPos(-10.0f, 10.0f, 10.0f);
+	//glm::vec3 LightPos(-10.0f, 10.0f, 10.0f);
 
 	Scene mainScene = Scene(window, "SceneData/MainScene.txt");
 
