@@ -32,7 +32,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 	
 }
 
-Object::Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot) : Rigidbody(this)
+/*Object::Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot) : Rigidbody(this)
 {
 	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
 	{
@@ -94,7 +94,7 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 	GetUniforms(shad);
 	
 
-}
+}*/
 
 Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot, glm::vec3 _scale) : Rigidbody(this)
 {
@@ -115,7 +115,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	
 }
 
-Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot) : Rigidbody(this)
+/*Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot) : Rigidbody(this)
 {
 	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
 	{
@@ -126,7 +126,7 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	rotation = rot;
 	scale = glm::vec3(1.0f);
 
-	std::cout << "Position:" << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	//std::cout << "Position:" << pos.x << " " << pos.y << " " << pos.z << std::endl;
 
 	GetVertices(_modelPath);
 	calculateAABB();
@@ -175,7 +175,7 @@ Object::Object(const std::string& _modelPath, Shader shad) : Rigidbody(this)
 
 	
 
-}
+}*/
 
 void Object::GetUniforms(Shader shad)
 {
@@ -287,7 +287,7 @@ void Object::calculateAABB()
 	min_y = max_y = vertices[0].y;
 	min_z = max_z = vertices[0].z;
 
-	for (int i = 0; i < vertices.size(); i++)
+	for (size_t i = 0; i < vertices.size(); i++)
 	{
 		//checking each vertex against the max and min
 		//if it exceeds either end, it becomes the new max/min
@@ -388,7 +388,7 @@ void Object::UpdateCollider()
 		min_y = max_y = vertex.y;
 		min_z = max_z = vertex.z;
 
-		for (int i = 0; i < vertices.size(); i++)
+		for (size_t i = 0; i < vertices.size(); i++)
 		{
 			vertex = (vertices[i] * scale)* rotationQuat;
 			//checking each vertex against the max and min
@@ -408,7 +408,7 @@ void Object::UpdateCollider()
 	{
 	case 0:
 		
-		for (int i = 0; i < OBBPlanes.size(); i++)
+		for (size_t i = 0; i < OBBPlanes.size(); i++)
 		{
 			OBBPlanes[i]->UpdatePoints(position, scale, rotationQuat);
 		}
@@ -484,13 +484,13 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 void Object::Update(float DeltaTime)
 {
 	//running the update function in all attached custom scripts
-	for (int i = 0; i < scripts.size(); i++)
+	for (size_t i = 0; i < scripts.size(); i++)
 	{
 		scripts[i]->Update();
 	}
 
 	//updating the position of the bounding box collider planes
-	for (int i = 0; i < Planes.size(); i++)
+	for (size_t i = 0; i < Planes.size(); i++)
 	{
 		Planes[i]->UpdatePoints(position, scale, rotation);
 	}
@@ -543,7 +543,7 @@ void Object::AddScript(ObjectScript* _script)
 void Object::StartScripts()
 {
 	//running the start function on all custom scripts
-	for (int i = 0; i < scripts.size(); i++)
+	for (size_t i = 0; i < scripts.size(); i++)
 	{
 		scripts[i]->Start();
 	}

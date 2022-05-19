@@ -19,15 +19,15 @@ class Object
 {
 public:
 	//main functions of the object
-	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot, glm::vec3 _scale);
-	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot);
-	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos);
-	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad);
+	Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 rot = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.0f));
+	//Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot);
+	//Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos);
+	//Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad);
 
-	Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot, glm::vec3 _scale);
-	Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot);
-	Object(const std::string& _modelPath, Shader shad, glm::vec3 pos);
-	Object(const std::string& _modelPath, Shader shad);
+	Object(const std::string& _modelPath, Shader shad, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 rot = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.0f));
+	//Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot);
+	//Object(const std::string& _modelPath, Shader shad, glm::vec3 pos);
+	//Object(const std::string& _modelPath, Shader shad);
 	~Object();
 
 	void Update(float DeltaTime);

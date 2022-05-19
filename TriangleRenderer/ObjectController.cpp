@@ -22,9 +22,9 @@ ObjectController* ObjectController::getInstance()
 void ObjectController::CheckGeneralCollisions(std::vector<Object*>& objs)
 {
 	//running through every object in the scene
-	for (int i = 0; i < objs.size(); i++)
+	for (size_t i = 0; i < objs.size(); i++)
 	{
-		for (int O = i + 1; O < objs.size(); O++)
+		for (size_t O = i + 1; O < objs.size(); O++)
 		{
 			//checks if at least one of the objects is dynamic
 			if (!objs[i]->GetRigidbody()->getKinematic() || !objs[O]->GetRigidbody()->getKinematic())
@@ -32,7 +32,7 @@ void ObjectController::CheckGeneralCollisions(std::vector<Object*>& objs)
 				//checking if the two objects are colliding
 				if (checkCollision(objs[i], objs[O]))
 				{
-					std::cout << "Collision " << i << " " << O << std::endl;
+					//std::cout << "Collision " << i << " " << O << std::endl;
 					//running collision response
 					CheckCollisionResponse(objs[i], objs[O]);
 				}
@@ -150,7 +150,7 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 		glm::vec3 TempIntersectPoint;
 
 		//running a collision check between the sphere and all the planes of the bounding box
-		for (int i = 0; i < planes.size(); i++)
+		for (size_t i = 0; i < planes.size(); i++)
 		{
 			//uses the plane class' built in intersection function to test for a collision
 			if (planes[i]->CheckIntersection(-planes[i]->normal, Sphere->GetPosition(), TempIntersectPoint))
@@ -361,6 +361,7 @@ bool ObjectController::SpherePlaneCollision(Object* Sphere, Object* OBB)
 					//retrieving the new velocity
 					velocity = Sphere->GetRigidbody()->GetVelocity();
 					glm::vec3 frictionVelocity = velocity * (1 - Sphere->GetRigidbody()->GetFriction() - velocity);
+					
 					//taking friction into account with collisions
 					//Sphere->GetRigidbody()->AddForce(frictionVelocity, VelocityChange);
 
