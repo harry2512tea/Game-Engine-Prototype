@@ -28,17 +28,19 @@ void Player::KeyInput()
 	glm::vec3 rotation = glm::degrees(glm::eulerAngles(attachedObj->GetRotation()));
 	if (input->GetAxis("Forward") && !input->GetAxis("Back"))
 	{
-		attachedObj->translation(glm::vec3(0.0f, 0.0f, -10.0f) * time->GetDeltaTime());
-		attachedObj->SetRotation(glm::vec3(0.0f, -180.0f, 0.0f));
+		attachedObj->GetRigidbody()->AddForce(glm::vec3(0.0f, 0.0f, -10.0f) * time->GetDeltaTime(), VelocityChange);
+		//attachedObj->translation(glm::vec3(0.0f, 0.0f, -10.0f) * time->GetDeltaTime());
+		//attachedObj->SetRotation(glm::vec3(0.0f, -180.0f, 0.0f));
 	}
 	else if (input->GetAxis("Back"))
 	{
-		attachedObj->translation(glm::vec3(0.0f, 0.0f, 10.0f) * time->GetDeltaTime());
-		attachedObj->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+		attachedObj->GetRigidbody()->AddForce(glm::vec3(0.0f, 0.0f, 10.0f) * time->GetDeltaTime(), VelocityChange);
+		//attachedObj->translation(glm::vec3(0.0f, 0.0f, 10.0f) * time->GetDeltaTime());
+		//attachedObj->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 	}
 	else
 	{
 		
-		attachedObj->SetRotation(glm::vec3(0.0f, -90.0f, 0.0f));
+		//attachedObj->SetRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 	}
 }

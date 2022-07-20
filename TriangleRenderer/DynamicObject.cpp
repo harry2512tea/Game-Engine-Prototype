@@ -77,7 +77,7 @@ void DynamicObject::Update(float DeltaTime)
 		
 		CalculateAngularVelocity();
 		//updating the object's rotation by the rotational momentum
-		attachedObj->rotate(glm::degrees(angular_velocity) * DeltaTime);
+		attachedObj->rotate(glm::degrees(-angular_velocity) * DeltaTime);
 		//std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 
 		//updating the objects momentum

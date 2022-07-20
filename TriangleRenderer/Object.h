@@ -50,11 +50,11 @@ public:
 	// 1 = Sphere Collider
 	int GetColliderType() { return colliderType; };
 	bool GetTrigger() { return isTrigger; };
-	float GetSphereRadius();
+	float GetSphereRadius() { return colliderRadius; };
 	DynamicObject* GetRigidbody() { return &Rigidbody; };
 	std::vector<OBBPlane*>& GetPlanes() { return OBBPlanes; };
-	glm::vec3 GetPosition();
-	glm::quat GetRotation();
+	glm::vec3 GetPosition() { return position; };
+	glm::quat GetRotation() { return rotationQuat; };
 
 
 	glm::vec3 centerOffset, center, size, min, max;
@@ -65,13 +65,14 @@ private:
 	int width, height;
 	WfModel objectModel = { 0 };
 	DynamicObject Rigidbody;
-	glm::mat4 model;
+	glm::mat4 model, rot;
 	std::vector<glm::vec3> vertices;
 	std::vector<ObjectScript*> scripts;
 	glm::vec3 scale = glm::vec3(0.0f);
 	glm::vec3 previousPos;
 	glm::vec3 previousRot;
 	glm::vec3 previousScale;
+	glm::vec3 radRot;
 	
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f);
@@ -83,6 +84,8 @@ private:
 	void calculateAABB();
 	void calculateOBB();
 	void UpdateCollider();
+
+	glm::quat DoRotation(glm::vec3 Euler);
 
 	void GetUniforms(Shader shad);
 

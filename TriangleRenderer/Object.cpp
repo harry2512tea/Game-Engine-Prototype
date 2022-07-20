@@ -20,6 +20,8 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 
 	position = pos;
 	rotation = rot;
+	//rotationQuat = DoRotation(rotation) * rotationQuat;
+	DoRotation(rotation);
 	scale = _scale;
 
 	GetVertices(_modelPath);
@@ -105,6 +107,8 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 
 	position = pos;
 	rotation = rot;
+	//rotationQuat = DoRotation(rotation) * rotationQuat;
+	DoRotation(rotation);
 	scale = _scale;
 
 	GetVertices(_modelPath);
@@ -349,7 +353,7 @@ void Object::calculateOBB()
 	max_y = OBBinitialMax.y;
 	max_z = OBBinitialMax.z;
 
-	rotationQuat = glm::quat(glm::radians(rotation));
+	//rotationQuat = glm::quat(glm::radians(rotation));
 	//0
 	OBBPlanes.push_back(new OBBPlane(glm::vec3(max_x, max_y, max_z), glm::vec3(min_x, max_y, max_z), glm::vec3(min_x, max_y, min_z), position, scale, rotationQuat));
 	//1
@@ -369,7 +373,7 @@ void Object::UpdateCollider()
 {
 	//0 = OBB
 	//1 = Sphere
-	rotationQuat = glm::quat(glm::radians(rotation));
+	//rotationQuat = glm::quat(glm::radians(rotation));
 
 	//min = (initialMin * scale) + position;
 	//max = (initialMax * scale) + position;
@@ -435,19 +439,31 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 
 	//initialising the model matrix
 	model = glm::mat4(1.0f);
+	glm::mat4 rotationMat = glm::mat4(1.0f);
+	glm::mat4 translationMat = glm::mat4(1.0f);
+	glm::mat4 scaleMat = glm::mat4(1.0f);
 
 	//model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
 	// 
 	//performing transformations on the model matrix
 	
-	rotationQuat = glm::quat(glm::radians(-rotation));
+	//radRot = glm::radians(rotation);
+
+	//rotationQuat = glm::quat(radRot);
+	//rotationQuat = glm::normalize(rotationQuat);
 
 	
-	model = glm::translate(model, position);
-	
+	translationMat = glm::translate(translationMat, position);
+	rotationMat = glm::mat4_cast(rotationQuat);
+	scaleMat = glm::scale(scaleMat, scale);
+
 	//model = setModelRotation(model);
-	model = model * glm::mat4_cast(rotationQuat);
-	model = glm::scale(model, scale);
+	//rot = glm::mat4_cast(rotationQuat);
+	//model = glm::rotate(model, rot);
+	
+
+	model = translationMat * rotationMat * scaleMat;
+
 
 	//setting the light position in the shader
 	glUniform3f(lightLoc, lightPos.x, lightPos.y, lightPos.z);
@@ -560,7 +576,7 @@ void Object::rotate(glm::vec3 _rotation)
 {
 	//rotating the object by a specified amount
 	rotation += _rotation;
-	
+	DoRotation(_rotation);
 }
 
 void Object::SetPosition(glm::vec3 pos)
@@ -578,17 +594,13 @@ void Object::SetRotation(glm::vec3 rot)
 	rotation = rot;
 }
 
-glm::vec3 Object::GetPosition()
+glm::quat Object::DoRotation(glm::vec3 Euler)
 {
-	return position;
-}
+	glm::vec3 angles = glm::radians(Euler);
 
-glm::quat Object::GetRotation()
-{
+	rotationQuat = glm::angleAxis(angles.x, glm::vec3(1.0f, 0.0f, 0.0f)) * rotationQuat;
+	rotationQuat = glm::angleAxis(angles.y, glm::vec3(0.0f, 1.0f, 0.0f)) * rotationQuat;
+	rotationQuat = glm::angleAxis(angles.z, glm::vec3(0.0f, 0.0f, 1.0f)) * rotationQuat;
+
 	return rotationQuat;
-}
-
-float Object::GetSphereRadius()
-{
-	return colliderRadius;
 }

@@ -68,6 +68,7 @@ void Scene::DrawScene()
 	
 
 	glEnable(GL_DEPTH_TEST);
+	//std::cout << objects[0]->rotation.x << " " << objects[0]->rotation.y << " " << objects[0]->rotation.z << std::endl;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, cam, camPos);
@@ -91,7 +92,7 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 	//initialising the physics objects
 	//CreatePhysicsObjects(ObjectList);
 	
-	objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(0, 4, 0), glm::vec3(0.0f, -90.0f, 0.0f)));
+	objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(0, 4, 0), glm::vec3(0.0f, 90.0f, 0.0f)));
 	objects.back()->SetColliderType(1);
 	objects.back()->GetRigidbody()->setKinematic(false);
 	objects.back()->AddScript(new Player(objects.back()));
@@ -107,7 +108,7 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 	objects.push_back(new Object("Models/WelcomeMat3DModel/WelcomeMatOBJ.obj", "Models/WelcomeMat3DModel/Textures/WelcomeMat_diffuse.jpg", SceneShader, glm::vec3(87.0f, -6.0f, 0.0f)));
 	objects.back()->AddScript(new movement(objects.back()));
 
-	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime2.jpg", SceneShader, glm::vec3(87.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
+	/*objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime2.jpg", SceneShader, glm::vec3(87.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
 	objects.back()->AddScript(new movement(objects.back()));
 	objects.back()->AddScript(new Avoid(objects.back()));
 
@@ -125,7 +126,7 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 
 	objects.push_back(new Object("Models/Prism/obamaprisme.obj", "Models/Prism/obama_prime2.jpg", SceneShader, glm::vec3(46.0f, 0.0f, 15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f)));
 	objects.back()->AddScript(new movement(objects.back()));
-	objects.back()->AddScript(new Avoid(objects.back()));
+	objects.back()->AddScript(new Avoid(objects.back()));*/
 	//objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(2, 4, -30), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(1.0f)));
 	//objects.push_back(new Object("Models/curuthers/curuthers.obj", SceneShader, glm::vec3(-2, 4, -30)));
 
