@@ -29,18 +29,9 @@ void Player::KeyInput()
 	if (input->GetAxis("Forward") && !input->GetAxis("Back"))
 	{
 		attachedObj->GetRigidbody()->AddForce(glm::vec3(0.0f, 0.0f, -10.0f) * time->GetDeltaTime(), VelocityChange);
-		//attachedObj->translation(glm::vec3(0.0f, 0.0f, -10.0f) * time->GetDeltaTime());
-		//attachedObj->SetRotation(glm::vec3(0.0f, -180.0f, 0.0f));
 	}
 	else if (input->GetAxis("Back"))
 	{
 		attachedObj->GetRigidbody()->AddForce(glm::vec3(0.0f, 0.0f, 10.0f) * time->GetDeltaTime(), VelocityChange);
-		//attachedObj->translation(glm::vec3(0.0f, 0.0f, 10.0f) * time->GetDeltaTime());
-		//attachedObj->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-	}
-	else
-	{
-		
-		//attachedObj->SetRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 	}
 }

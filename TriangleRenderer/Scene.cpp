@@ -55,24 +55,21 @@ void Scene::updateObjects(float DeltaTime)
 
 	Input* input = Input::getInstance();
 
-	camPos = objects[0]->GetPosition() + glm::vec3(0.0f, 8.0f, 20.0f);
+	MainCam.SetPosition(objects[0]->GetPosition() + glm::vec3(0.0f, 8.0f, 20.0f));
 
-	glm::quat camRotation = glm::quat(glm::radians(-camRot));
+	//glm::quat camRotation = glm::quat(glm::radians(-camRot));
 }
 
 void Scene::DrawScene()
 {
-	cam = glm::mat4(1.0f);
-
-	cam = setCamRotation(cam);
-	cam = glm::translate(cam, -camPos);
+	cam = MainCam.CreateViewMatrix();
 	
 
 	glEnable(GL_DEPTH_TEST);
 	//std::cout << objects[0]->rotation.x << " " << objects[0]->rotation.y << " " << objects[0]->rotation.z << std::endl;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, cam, camPos);
+		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, cam, MainCam.GetPosition());
 	}
 	glDisable(GL_DEPTH_TEST);
 }
@@ -80,15 +77,15 @@ void Scene::DrawScene()
 void Scene::CreateLevel(std::vector<std::string>& data)
 {
 	//importing the data from the file
-	camPos = ImportVectorData(data[0]);
-	camRot = ImportVectorData(data[1]);
+	glm::vec3 camPos = ImportVectorData(data[0]);
+	glm::vec3 camRot = ImportVectorData(data[1]);
 	LightPos = ImportVectorData(data[2]);
 	LightCol = ImportVectorData(data[3]);
 	ObjectController::getInstance()->SetGravity(ImportVectorData(data[4]));
 	ObjectController::getInstance()->SetDensity(std::stof(data[5].c_str()));
 	std::string ObjectList = data[6];
 
-	
+	MainCam = Camera(camPos, camRot);
 
 	//initialising the physics objects
 	//CreatePhysicsObjects(ObjectList);
@@ -136,18 +133,6 @@ void Scene::CreateLevel(std::vector<std::string>& data)
 
 	//Attaching custom scripts to specified objects
 	
-}
-
-glm::mat4 Scene::setCamRotation(glm::mat4 _cam)
-{
-	//creating a rotation matrix by rotating about each axis
-	_cam = glm::rotate(_cam, glm::radians(-camRot.x), glm::vec3(1, 0, 0));
-	_cam = glm::rotate(_cam, glm::radians(-camRot.y), glm::vec3(0, 1, 0));
-	_cam = glm::rotate(_cam, glm::radians(-camRot.z), glm::vec3(0, 0, 1));
-
-	//returning the rotation matrix
-	return _cam;
-
 }
 
 glm::vec3 Scene::ImportVectorData(const std::string& data)

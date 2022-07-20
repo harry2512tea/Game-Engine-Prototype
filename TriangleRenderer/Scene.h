@@ -7,6 +7,7 @@
 #include <string>
 
 //Project header files
+#include "Camera.h"
 #include "Object.h"
 #include "Shader.h"
 #include "ObjectScript.h"
@@ -23,8 +24,6 @@ public:
 	void updateObjects(float DeltaTime);
 	void DrawScene();
 
-	glm::mat4 setCamRotation(glm::mat4 _cam);
-
 private:
 	std::string ObjectFile;
 	glm::vec3 ImportVectorData(const std::string& data);
@@ -32,10 +31,12 @@ private:
 	ObjectController* kin = ObjectController::getInstance();
 	std::vector<Object*> objects;
 	std::vector<Object*> physicsObjects;
-	glm::vec3 LightPos, LightCol, camPos, camRot;
+	std::vector<Camera*> Cameras;
+	glm::vec3 LightPos, LightCol;
 	glm::mat4 cam;
 	SDL_Window *window;
 	Shader SceneShader;
+	Camera MainCam;
 
 	void CreateLevel(std::vector<std::string> &data);
 	void CreatePhysicsObjects(const std::string& filePath);
