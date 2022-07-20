@@ -91,9 +91,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>contrib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>SDL2.lib;glew32.lib;wavefront.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -132,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Avoid.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="DynamicObject.cpp" />
     <ClCompile Include="ObjectController.cpp" />
@@ -148,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Avoid.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="DynamicObject.h" />
     <ClInclude Include="ObjectController.h" />

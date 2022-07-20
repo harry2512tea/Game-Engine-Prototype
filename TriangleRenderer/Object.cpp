@@ -34,69 +34,6 @@ Object::Object(const std::string& _modelPath, const std::string& _texturePath, S
 	
 }
 
-/*Object::Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos, glm::vec3 rot) : Rigidbody(this)
-{
-	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
-	{
-		throw std::runtime_error("Error loading model");
-	}
-
-	position = pos;
-	rotation = rot;
-	scale = glm::vec3(1.0f);
-
-	GetVertices(_modelPath);
-	calculateAABB();
-	calculateOBB();
-
-	objectModel.textureId = GenTexture(_texturePath);
-
-	GetUniforms(shad);
-	
-}
-
-Object::Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad, glm::vec3 pos) : Rigidbody(this)
-{
-	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
-	{
-		throw std::runtime_error("Error loading model");
-	}
-
-	position = pos;
-	rotation = glm::vec3(0.0f);
-	scale = glm::vec3(1.0f);
-
-	GetVertices(_modelPath);
-	calculateAABB();
-	calculateOBB();
-
-	objectModel.textureId = GenTexture(_texturePath);
-
-	GetUniforms(shad);
-
-}
-
-Object::Object(const std::string& _modelPath, const std::string& _texturePath, Shader shad) : Rigidbody(this)
-{
-	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
-	{
-		throw std::runtime_error("Error loading model");
-	}
-
-	position = glm::vec3(0.0f);
-	rotation = glm::vec3(0.0f);
-	scale = glm::vec3(1.0f);
-
-	GetVertices(_modelPath);
-	calculateAABB();
-	calculateOBB();
-
-	objectModel.textureId = GenTexture(_texturePath);
-
-	GetUniforms(shad);
-	
-
-}*/
 
 Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot, glm::vec3 _scale) : Rigidbody(this)
 {
@@ -119,67 +56,6 @@ Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::v
 	
 }
 
-/*Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos, glm::vec3 rot) : Rigidbody(this)
-{
-	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
-	{
-		throw std::runtime_error("Error loading model");
-	}
-
-	position = pos;
-	rotation = rot;
-	scale = glm::vec3(1.0f);
-
-	//std::cout << "Position:" << pos.x << " " << pos.y << " " << pos.z << std::endl;
-
-	GetVertices(_modelPath);
-	calculateAABB();
-	calculateOBB();
-
-	GetUniforms(shad);
-	
-	
-}
-
-Object::Object(const std::string& _modelPath, Shader shad, glm::vec3 pos) : Rigidbody(this)
-{
-	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
-	{
-		throw std::runtime_error("Error loading model");
-	}
-
-	position = pos;
-	rotation = glm::vec3(0.0f);
-	scale = glm::vec3(1.0f);
-
-	GetVertices(_modelPath);
-	calculateAABB();
-	calculateOBB();
-
-	GetUniforms(shad);
-	
-}
-
-Object::Object(const std::string& _modelPath, Shader shad) : Rigidbody(this)
-{
-	if (WfModelLoad(_modelPath.c_str(), &objectModel) != 0)
-	{
-		throw std::runtime_error("Error loading model");
-	}
-
-	position = glm::vec3(0.0f);
-	rotation = glm::vec3(0.0f);
-	scale = glm::vec3(1.0f);
-
-	GetVertices(_modelPath);
-	calculateAABB();
-	calculateOBB();
-
-	GetUniforms(shad);
-
-	
-
-}*/
 
 void Object::GetUniforms(Shader shad)
 {
@@ -430,7 +306,8 @@ void Object::UpdateCollider()
 void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam, glm::vec3 camPos)
 {
 	SDL_GetWindowSize(window, &width, &height);
-	
+	rotation = CheckRotation(rotation);
+
 	//binding the object's shader
 	shad.use();
 
@@ -443,24 +320,10 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	glm::mat4 translationMat = glm::mat4(1.0f);
 	glm::mat4 scaleMat = glm::mat4(1.0f);
 
-	//model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
-	// 
-	//performing transformations on the model matrix
-	
-	//radRot = glm::radians(rotation);
-
-	//rotationQuat = glm::quat(radRot);
-	//rotationQuat = glm::normalize(rotationQuat);
-
 	
 	translationMat = glm::translate(translationMat, position);
 	rotationMat = glm::mat4_cast(rotationQuat);
 	scaleMat = glm::scale(scaleMat, scale);
-
-	//model = setModelRotation(model);
-	//rot = glm::mat4_cast(rotationQuat);
-	//model = glm::rotate(model, rot);
-	
 
 	model = translationMat * rotationMat * scaleMat;
 
@@ -575,8 +438,8 @@ void Object::translation(glm::vec3 movement)
 void Object::rotate(glm::vec3 _rotation)
 {
 	//rotating the object by a specified amount
-	rotation += _rotation;
-	DoRotation(_rotation);
+	rotation += CheckRotation(_rotation);
+	DoRotation(CheckRotation(_rotation));
 }
 
 void Object::SetPosition(glm::vec3 pos)
@@ -603,4 +466,35 @@ glm::quat Object::DoRotation(glm::vec3 Euler)
 	rotationQuat = glm::angleAxis(angles.z, glm::vec3(0.0f, 0.0f, 1.0f)) * rotationQuat;
 
 	return rotationQuat;
+}
+
+glm::vec3 Object::CheckRotation(glm::vec3 _rotation)
+{
+	glm::vec3 newRot = _rotation;
+	if (_rotation.x > 360)
+	{
+		_rotation.x -= 360;
+	}
+	else if (_rotation.x < -360)
+	{
+		_rotation.x += 360;
+	}
+	if (_rotation.y > 360)
+	{
+		_rotation.y -= 360;
+	}
+	else if (_rotation.y < -360)
+	{
+		_rotation.y += 360;
+	}
+	if (_rotation.z > 360)
+	{
+		_rotation.z -= 360;
+	}
+	else if (_rotation.z < -360)
+	{
+		_rotation.z += 360;
+	}
+
+	return _rotation;
 }

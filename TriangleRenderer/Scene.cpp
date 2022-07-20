@@ -63,6 +63,7 @@ void Scene::updateObjects(float DeltaTime)
 void Scene::DrawScene()
 {
 	cam = glm::mat4(1.0f);
+
 	cam = setCamRotation(cam);
 	cam = glm::translate(cam, -camPos);
 	
