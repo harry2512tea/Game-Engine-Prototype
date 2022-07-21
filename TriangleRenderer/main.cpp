@@ -41,7 +41,7 @@ int main()
 		throw std::runtime_error("glew not working :) ");
 	}
 
-	
+	float PrevWindowWidth = windowHeight, PrevWindowHeight = windowWidth;
 	int width = 0;
 	int height = 0;
 	unsigned int lastTime = 0;
@@ -56,11 +56,9 @@ int main()
 
 	Mesh sm(0);
 
-	//Shader ds("shaders/light.vert", "shaders/light.frag");
 
 	Shader ss("shaders/postprocess.vert", "shaders/null.frag");
 
-	//glm::vec3 LightPos(-10.0f, 10.0f, 10.0f);
 
 	Scene mainScene = Scene(window, "SceneData/MainScene.txt");
 
@@ -69,6 +67,14 @@ int main()
 	while (!quit)
 	{
 		SDL_GetWindowSize(window, &width, &height);
+
+		//std::cout << width << std::endl;
+		/*if (PrevWindowHeight != height || PrevWindowWidth != width)
+		{
+			PrevWindowHeight = height;
+			PrevWindowWidth = width;
+			rtx = RenderTexture(width, height);
+		}*/
 
 		rtx.bind();
 

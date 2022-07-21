@@ -10,6 +10,7 @@
 #include <vector>
 //#include <glm/gtx/quaternion.hpp>
 
+#include "Camera.h"
 #include "Shader.h"
 #include "ObjectScript.h"
 #include "DynamicObject.h"
@@ -26,7 +27,7 @@ public:
 
 	void Update(float DeltaTime);
 	void UpdatePhysics(float DeltaTime, std::vector<Object*>& objs, int address);
-	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam, glm::vec3 camPos);
+	void DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, Camera& cam);
 	void StartScripts();
 	void EnterTrigger(Object* collision);
 	void EnterCollision(Object* collision);

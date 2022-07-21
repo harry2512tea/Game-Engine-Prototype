@@ -69,7 +69,7 @@ void Scene::DrawScene()
 	//std::cout << objects[0]->rotation.x << " " << objects[0]->rotation.y << " " << objects[0]->rotation.z << std::endl;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, cam, MainCam.GetPosition());
+		objects[i]->DrawObject(SceneShader, window, LightPos, LightCol, MainCam);
 	}
 	glDisable(GL_DEPTH_TEST);
 }

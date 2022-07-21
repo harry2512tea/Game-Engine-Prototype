@@ -303,7 +303,7 @@ void Object::UpdateCollider()
 	previousScale = scale;
 }
 
-void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, glm::mat4 cam, glm::vec3 camPos)
+void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, glm::vec3 lightCol, Camera& cam)
 {
 	SDL_GetWindowSize(window, &width, &height);
 	rotation = CheckRotation(rotation);
@@ -312,7 +312,7 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	shad.use();
 
 	//calculating the projection matrix
-	glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)width / (float)height, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)width / (float)height, cam.GetNearClip(), cam.GetFarClip());
 
 	//initialising the model matrix
 	model = glm::mat4(1.0f);
@@ -334,13 +334,13 @@ void Object::DrawObject(Shader& shad, SDL_Window *window, glm::vec3 lightPos, gl
 	//setting the light colour in the shader
 	glUniform3f(lightColLoc, lightCol.x, lightCol.y, lightCol.z);
 
-	glUniform3f(viewPosLoc, camPos.x, camPos.y, camPos.z);
+	glUniform3f(viewPosLoc, cam.GetPosition().x, cam.GetPosition().y, cam.GetPosition().z);
 
 	//uploading the model matrix to the shader
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	//uploading the camera position to the shader
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(cam));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(cam.CreateViewMatrix()));
 
 	// Upload the projection matrix to the shader
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
