@@ -12,6 +12,7 @@
 
 #include "Camera.h"
 #include "Shader.h"
+#include "Component.h"
 #include "ObjectScript.h"
 #include "DynamicObject.h"
 #include "Plane.h"
@@ -54,6 +55,22 @@ public:
 
 	glm::vec3 centerOffset, center, size, min, max;
 
+	bool HasComponent(Type component);
+	Component* GetComponent(Type component);
+
+	/*template<typename T> 
+	T GetComponent(Type component)
+	{
+		for (size_t i = 0; i < Components.size(); i++)
+		{
+			if (Components[i]->GetType() == component)
+			{
+				return Components[i];
+			}
+		}
+		return NULL;
+	}*/
+
 private:
 
 
@@ -63,6 +80,7 @@ private:
 	glm::mat4 model, rot;
 	std::vector<glm::vec3> vertices;
 	std::vector<ObjectScript*> scripts;
+	std::vector<Component*> Components;
 	glm::vec3 scale = glm::vec3(0.0f);
 	glm::vec3 previousPos;
 	glm::vec3 previousRot;
@@ -101,4 +119,8 @@ private:
 	glm::vec3 OBBinitialMin, OBBinitialMax = glm::vec3(0.0f);
 	glm::quat rotationQuat;
 	std::vector<OBBPlane*> OBBPlanes;
+
+
+
+
 };

@@ -498,3 +498,18 @@ glm::vec3 Object::CheckRotation(glm::vec3 _rotation)
 
 	return _rotation;
 }
+
+
+
+
+Component* Object::GetComponent(Type component)
+{
+	for (size_t i = 0; i < Components.size(); i++)
+	{
+		if (Components[i]->GetType() == component)
+		{
+			return Components[i];
+		}
+	}
+	return NULL;
+}
